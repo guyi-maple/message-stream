@@ -41,3 +41,8 @@ public void onMessage(Message message){
 实现接口 [MessageStream](./message-stream-api/src/main/java/tech/guyi/component/message/stream/api/MessageStream.java) , 即可实现自己的消息流。
 
 详细请参见实现 [RabbitmqMessageStream](./message-stream-rabbitmq/src/main/java/tech/guyi/component/message/stream/rabbitmq/RabbitmqMessageStream.java)
+
+## 已实现消息流
+
+* [基于Rabbitmq的消息流](./message-stream-rabbitmq)
+* [基于邮件的消息流](./message-stream-email)
