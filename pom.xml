@@ -20,6 +20,13 @@
         <spring.boot.version>2.4.1</spring.boot.version>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/guyi-maple/message-stream</url>
+        </repository>
+    </distributionManagement>
+
     <dependencyManagement>
         <dependencies>
             <dependency>

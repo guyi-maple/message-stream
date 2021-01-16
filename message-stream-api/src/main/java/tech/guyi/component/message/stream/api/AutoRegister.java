@@ -2,7 +2,6 @@ package tech.guyi.component.message.stream.api;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
