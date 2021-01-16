@@ -11,6 +11,7 @@
     <modules>
         <module>message-stream-api</module>
         <module>message-stream-rabbitmq</module>
+        <module>message-stream-email</module>
     </modules>
 
     <properties>
