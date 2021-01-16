@@ -11,6 +11,11 @@ import lombok.Data;
 public class EmailPullConfiguration {
 
     /**
+     * 拉取时间间隔 <br />
+     * 单位为分钟
+     */
+    private int delay = 1;
+    /**
      * 邮件拉取协议 <br />
      * 默认 imap
      */

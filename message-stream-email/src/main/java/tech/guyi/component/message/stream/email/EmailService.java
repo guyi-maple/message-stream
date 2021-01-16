@@ -42,7 +42,12 @@ public class EmailService implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         if (email.isEnable()){
-            this.future = this.executorService.scheduleWithFixedDelay(this::pullEmail, 0,1, TimeUnit.MINUTES);
+            this.future = this.executorService.scheduleWithFixedDelay(
+                    this::pullEmail,
+                    0,
+                    pull.getDelay(),
+                    TimeUnit.MINUTES
+            );
         }
     }
 
