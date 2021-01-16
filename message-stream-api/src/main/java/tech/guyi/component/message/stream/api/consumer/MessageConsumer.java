@@ -23,13 +23,17 @@ public interface MessageConsumer extends Consumer<Message> {
      * 具体说明见 MessageConsumerEntry.stream
      * @return 消息流名称
      */
-    List<String> getStream();
+    default List<String> getStream(){
+        return null;
+    }
 
     /**
      * 此消费者的额外参数 <br />
      * 具体说明见 MessageConsumerEntry.attach
      * @return 额外参数
      */
-    Map<String,Object> getAttach();
+    default Map<String,Object> getAttach(){
+        return null;
+    }
 
 }
