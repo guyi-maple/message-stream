@@ -1,8 +1,9 @@
 package tech.guyi.component.message.stream.api;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.ObjectUtils;
+import tech.guyi.component.message.stream.api.entry.Message;
 import tech.guyi.component.message.stream.api.entry.MessageConsumerEntry;
 
 import javax.annotation.Resource;
@@ -54,6 +55,26 @@ public class MessageStreamRepository implements InitializingBean {
 
         // 消费者注册到消息流
         streams.forEach(stream -> stream.register(consumer));
+    }
+
+    /**
+     * 向消息流中发布消息 <br />
+     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息 <br />
+     * 如果消息实体中stream指定的消息流不存在, 则会丢弃该消息
+     * @param message 要发布的消息
+     */
+    public void publish(Message message){
+        // 获取到需要发布的消息流, 并发布消息
+        Optional.ofNullable(message.getStream())
+                .filter(name -> !ObjectUtils.isEmpty(name))
+                .map(names ->
+                        this.streams.values()
+                                .stream()
+                                .filter(stream -> names.contains(stream.getName()))
+                                .collect(Collectors.toList()))
+                .map(list -> (Collection<MessageStream>) list)
+                .orElse(this.streams.values())
+                .forEach(stream -> stream.publish(message));
     }
 
 }

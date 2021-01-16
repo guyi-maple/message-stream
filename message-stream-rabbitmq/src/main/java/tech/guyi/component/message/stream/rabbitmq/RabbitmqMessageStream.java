@@ -53,6 +53,13 @@ public class RabbitmqMessageStream implements MessageStream {
 
     @Override
     @SneakyThrows
+    public void publish(Message message) {
+        String key = message.getTopic().replaceAll("/",".");
+        this.channel.basicPublish(this.exchange,key,null,message.getContent());
+    }
+
+    @Override
+    @SneakyThrows
     public void register(MessageConsumerEntry consumer) {
         channel.queueDeclare(this.queue, false, false, false, null);
         for (String topic : consumer.getTopic()) {

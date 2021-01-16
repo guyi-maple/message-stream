@@ -1,6 +1,7 @@
 package tech.guyi.component.message.stream.api;
 
 import lombok.NonNull;
+import tech.guyi.component.message.stream.api.entry.Message;
 import tech.guyi.component.message.stream.api.entry.MessageConsumerEntry;
 
 /**
@@ -18,6 +19,12 @@ public interface MessageStream {
      */
     @NonNull
     String getName();
+
+    /**
+     * 发布消息
+     * @param message 要发布的消息
+     */
+    void publish(Message message);
 
     /**
      * 注册一个消息消费者 <br />
