@@ -7,6 +7,7 @@ import tech.guyi.component.message.stream.api.MessageStream;
 import tech.guyi.component.message.stream.api.entry.Message;
 import tech.guyi.component.message.stream.api.entry.MessageConsumerEntry;
 
+import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,26 +22,22 @@ public class RabbitmqMessageStream implements MessageStream {
     // 连接
     private Connection connection;
 
-    private String exchange;
-    private String queue;
-
     private final Set<String> topics = new HashSet<>();
+
+    @Resource
+    private RabbitmqConfiguration configuration;
 
     /**
      * 建立连接
-     * @param configuration 连接配置
      */
     @SneakyThrows
-    public void connect(RabbitmqConfiguration configuration){
+    public void connect(){
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername(configuration.getUsername());
         factory.setPassword(configuration.getPassword());
         factory.setVirtualHost(configuration.getVirtualHost());
         factory.setHost(configuration.getHost());
         factory.setPort(configuration.getPort());
-
-        this.queue = configuration.getQueue();
-        this.exchange = configuration.getExchange();
 
         this.connection = factory.newConnection();
         this.channel = this.connection.createChannel();
@@ -55,23 +52,24 @@ public class RabbitmqMessageStream implements MessageStream {
     @SneakyThrows
     public void publish(Message message) {
         String key = message.getTopic().replaceAll("/",".");
-        this.channel.basicPublish(this.exchange,key,null,message.getContent());
+        this.channel.basicPublish(configuration.getExchange(),key,null,message.getContent());
     }
 
     @Override
     @SneakyThrows
     public void register(MessageConsumerEntry consumer) {
-        channel.queueDeclare(this.queue, false, false, false, null);
+        channel.queueDeclare(configuration.getQueue(), false, false, false, null);
         for (String topic : consumer.getTopic()) {
             topics.add(topic);
-            channel.queueBind(this.queue, this.exchange, topic.replaceAll("/","."));
-            channel.basicConsume(this.queue, true,new DefaultConsumer(channel){
+            channel.queueBind(configuration.getQueue(), configuration.getExchange(), topic.replaceAll("/","."));
+            channel.basicConsume(configuration.getQueue(), true,new DefaultConsumer(channel){
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
                     Message message = new Message();
                     message.setStream(getName());
                     message.setContent(body);
                     message.setTopic(topic);
+                    message.setAddress(configuration.getHost());
                     consumer.getReceiver().accept(message);
                 }
             });
@@ -82,7 +80,7 @@ public class RabbitmqMessageStream implements MessageStream {
     @SneakyThrows
     public void unregister(String topic) {
         topics.remove(topic);
-        this.channel.queueUnbind(this.queue,this.exchange,topic.replaceAll("/","."));
+        this.channel.queueUnbind(configuration.getQueue(),configuration.getExchange(),topic.replaceAll("/","."));
     }
 
     @Override
