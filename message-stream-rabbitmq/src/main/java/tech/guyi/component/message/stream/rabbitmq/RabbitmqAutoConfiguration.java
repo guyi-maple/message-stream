@@ -21,9 +21,7 @@ public class RabbitmqAutoConfiguration {
     @Bean
     @ConditionalOnProperty(value = "message.stream.rabbitmq.enable", havingValue = "true", matchIfMissing = true)
     public RabbitmqMessageStream rabbitmqMessageStream(){
-        RabbitmqMessageStream stream = new RabbitmqMessageStream();
-        stream.connect();
-        return stream;
+        return new RabbitmqMessageStream();
     }
 
 }

@@ -1,7 +1,8 @@
 package tech.guyi.component.message.stream.api.hook;
 
 import tech.guyi.component.message.stream.api.entry.Message;
-import tech.guyi.component.message.stream.api.entry.MessageConsumerEntry;
+
+import java.util.List;
 
 /**
  * 消息流钩子 <br />
@@ -15,7 +16,7 @@ import tech.guyi.component.message.stream.api.entry.MessageConsumerEntry;
 public interface MessageStreamHook<E> {
 
     // 消息消费者注册钩子
-    MessageStreamHookType<MessageConsumerEntry,MessageConsumerRegisterHook> REGISTER = MessageStreamHookType.valueOf(MessageConsumerRegisterHook.class);
+    MessageStreamHookType<List<String>,MessageConsumerRegisterHook> REGISTER = MessageStreamHookType.valueOf(MessageConsumerRegisterHook.class);
     // 发布消息钩子
     MessageStreamHookType<Message,MessagePublishHook> PUBLISH = MessageStreamHookType.valueOf(MessagePublishHook.class);
 

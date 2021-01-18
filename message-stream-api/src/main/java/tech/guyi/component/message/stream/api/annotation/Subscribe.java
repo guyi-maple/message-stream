@@ -1,5 +1,7 @@
 package tech.guyi.component.message.stream.api.annotation;
 
+import org.springframework.core.annotation.AliasFor;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -16,7 +18,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MessageListener {
+public @interface Subscribe {
 
     /**
      * 要监听的消息主题
@@ -35,6 +37,6 @@ public @interface MessageListener {
      * 自定义参数
      * @return 自定义参数
      */
-    MessageListenerParam[] params() default {};
+    Parameter[] params() default {};
 
 }

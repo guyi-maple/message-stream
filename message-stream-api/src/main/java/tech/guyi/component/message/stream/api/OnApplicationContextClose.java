@@ -4,6 +4,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
+import tech.guyi.component.message.stream.api.stream.MessageStream;
 
 import javax.annotation.Resource;
 import java.util.LinkedList;

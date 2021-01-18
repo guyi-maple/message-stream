@@ -1,16 +1,13 @@
 package tech.guyi.component.message.stream.api.consumer;
 
-import tech.guyi.component.message.stream.api.entry.Message;
-
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * @author guyi
  * @date 2021/1/16 12:51
  */
-public interface MessageConsumer extends Consumer<Message> {
+public interface MessageConsumer<M> {
 
     /**
      * 感兴趣的消息主题
@@ -35,5 +32,22 @@ public interface MessageConsumer extends Consumer<Message> {
     default Map<String,Object> getAttach(){
         return null;
     }
+
+    /**
+     * 返回消息内容类型
+     * @return 消息内容类型
+     */
+    Class<M> messageType();
+
+    /**
+     * 消费消息
+     * @param message 消息内容
+     * @param topic Topic
+     * @param sourceStream 来源消息流的名称
+     * @param attach 额外信息
+     */
+    void accept(M message, String topic, String sourceStream, Map<String,Object> attach);
+
+
 
 }
