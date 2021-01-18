@@ -5,6 +5,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.util.ObjectUtils;
 import tech.guyi.component.message.stream.api.entry.Message;
 import tech.guyi.component.message.stream.api.entry.MessageConsumerEntry;
+import tech.guyi.component.message.stream.api.hook.MessageConsumerRegisterHook;
+import tech.guyi.component.message.stream.api.hook.MessageStreamHook;
+import tech.guyi.component.message.stream.api.hook.MessageStreamHookRunner;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -19,6 +22,9 @@ public class MessageStreamRepository implements InitializingBean {
 
     // 消息流集合
     private final Map<String,MessageStream> streams = new HashMap<>();
+
+    @Resource
+    private MessageStreamHookRunner runner;
 
     @Resource
     private ApplicationContext context;
@@ -55,6 +61,9 @@ public class MessageStreamRepository implements InitializingBean {
 
         // 消费者注册到消息流
         streams.forEach(stream -> stream.register(consumer));
+
+        // 回调注册钩子
+        this.runner.run(MessageStreamHook.REGISTER, consumer);
     }
 
     /**
@@ -75,6 +84,9 @@ public class MessageStreamRepository implements InitializingBean {
                 .map(list -> (Collection<MessageStream>) list)
                 .orElse(this.streams.values())
                 .forEach(stream -> stream.publish(message));
+
+        // 回调消息发布钩子
+        this.runner.run(MessageStreamHook.PUBLISH, message);
     }
 
 }

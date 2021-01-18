@@ -2,6 +2,7 @@ package tech.guyi.component.message.stream.api;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tech.guyi.component.message.stream.api.hook.MessageStreamHookRunner;
 
 /**
  * 自动装配
@@ -24,6 +25,11 @@ public class AutoConfiguration {
     @Bean
     public OnApplicationContextClose onApplicationContextClose(){
         return new OnApplicationContextClose();
+    }
+
+    @Bean
+    public MessageStreamHookRunner messageStreamHookRunner(){
+        return new MessageStreamHookRunner();
     }
 
 }
