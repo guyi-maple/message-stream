@@ -108,4 +108,4 @@ public class Test {
 
 当消息的类型不为 String 或 byte[] 时, 可以实现接口 [MessageTypeConverter](src/main/java/tech/guyi/component/message/stream/api/converter/MessageTypeConverter.java) 进行类型转换。
 
-拥有类型转换的自定义消息类型可以直接在消费和发布。
+拥有类型转换的自定义消息类型可以直接在消费和发布中使用。
