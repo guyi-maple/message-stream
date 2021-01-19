@@ -14,9 +14,7 @@
 
 随着下层消息流实现的增加, 可以实现更多的消息统一消费方式, 如文件、FTP、OSS、UDP、TCP等等, 终极目标是统一所有的IO输出。
 
-# 使用API
-
-API使用请参见子模块 [message-stream-api](./message-stream-api) 文档。
+[使用文档](./message-stream-api)
 
 # 已支持消息流
 
