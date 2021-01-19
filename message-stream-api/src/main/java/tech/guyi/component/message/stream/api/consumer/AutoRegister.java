@@ -21,22 +21,22 @@ abstract class MethodMessageConsumer implements MessageConsumer<Object> {
     private final Object bean;
     private final Method method;
     private final Class<?> type;
-    private final Subscribe subscribe;
+    private final StreamSubscribe streamSubscribe;
 
     @Override
     public List<String> getStream() {
-        return Arrays.asList(subscribe.stream());
+        return Arrays.asList(streamSubscribe.stream());
     }
 
     @Override
     public Map<String, Object> getAttach() {
-        return Arrays.stream(subscribe.params())
+        return Arrays.stream(streamSubscribe.params())
                 .collect(Collectors.toMap(Parameter::key, Parameter::value));
     }
 
     @Override
     public List<String> getTopic() {
-        return Arrays.asList(subscribe.topic());
+        return Arrays.asList(streamSubscribe.topic());
     }
 
     @Override
@@ -57,7 +57,7 @@ abstract class MethodMessageConsumer implements MessageConsumer<Object> {
     }
 
     static String getParameterName(java.lang.reflect.Parameter parameter){
-        if (parameter.getAnnotation(Message.class) != null){
+        if (parameter.getAnnotation(MessageContent.class) != null){
             return "message";
         }
         if (parameter.getAnnotation(Topic.class) != null){
@@ -66,7 +66,7 @@ abstract class MethodMessageConsumer implements MessageConsumer<Object> {
         if (parameter.getAnnotation(StreamName.class) != null){
             return "stream";
         }
-        if (parameter.getAnnotation(Attach.class) != null){
+        if (parameter.getAnnotation(MessageAttach.class) != null){
             return "attach";
         }
         return null;
@@ -94,7 +94,7 @@ public class AutoRegister implements BeanPostProcessor {
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         for (Method method : bean.getClass().getMethods()) {
-            Subscribe listener = AnnotationUtils.findAnnotation(method, Subscribe.class);
+            StreamSubscribe listener = AnnotationUtils.findAnnotation(method, StreamSubscribe.class);
             if (listener != null){
                 Class<?>[] types = method.getParameterTypes();
                 MethodMessageConsumer consumer;

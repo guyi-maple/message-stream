@@ -1,4 +1,6 @@
-package tech.guyi.component.message.stream.api.hook;
+package tech.guyi.component.message.stream.api.hook.defaults;
+
+import tech.guyi.component.message.stream.api.hook.MessageStreamHook;
 
 import java.util.List;
 

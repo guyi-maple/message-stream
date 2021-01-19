@@ -4,7 +4,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import tech.guyi.component.message.stream.websocket.consumer.ConsumerRepository;
 import tech.guyi.component.message.stream.websocket.topic.JsonMessageTopicHandler;
 import tech.guyi.component.message.stream.websocket.topic.TopicHandlerFactory;
 
@@ -26,11 +25,6 @@ public class WebSocketAutoConfiguration {
     @Bean
     public WebSocketMessageStream webSocketMessageStream(){
         return new WebSocketMessageStream();
-    }
-
-    @Bean
-    public ConsumerRepository consumerRepository(){
-        return new ConsumerRepository();
     }
 
     @Bean

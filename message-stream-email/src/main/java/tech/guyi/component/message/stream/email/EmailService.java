@@ -2,6 +2,7 @@ package tech.guyi.component.message.stream.email;
 
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.InitializingBean;
+import tech.guyi.component.message.stream.api.worker.MessageStreamWorker;
 import tech.guyi.component.message.stream.email.configuration.EmailConfiguration;
 import tech.guyi.component.message.stream.email.configuration.EmailPullConfiguration;
 import tech.guyi.component.message.stream.email.configuration.EmailPullSslConfiguration;
@@ -15,9 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -36,13 +35,14 @@ public class EmailService implements InitializingBean {
     private EmailPullConfiguration pull;
     @Resource
     private EmailPullSslConfiguration ssl;
+    @Resource
+    private MessageStreamWorker worker;
 
     private Future<?> future;
-    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
     @Override
     public void afterPropertiesSet() {
         if (email.isEnable()){
-            this.future = this.executorService.scheduleWithFixedDelay(
+            this.future = this.worker.scheduleWithFixedDelay(
                     this::pullEmail,
                     0,
                     pull.getDelay(),

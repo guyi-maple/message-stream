@@ -2,6 +2,7 @@ package tech.guyi.component.message.stream.api.converter;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
+import tech.guyi.component.message.stream.api.converter.exception.NotFoundTypeConverter;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;

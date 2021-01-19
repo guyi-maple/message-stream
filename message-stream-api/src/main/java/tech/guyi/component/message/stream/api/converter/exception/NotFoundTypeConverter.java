@@ -1,4 +1,4 @@
-package tech.guyi.component.message.stream.api.converter;
+package tech.guyi.component.message.stream.api.converter.exception;
 
 /**
  * @author guyi

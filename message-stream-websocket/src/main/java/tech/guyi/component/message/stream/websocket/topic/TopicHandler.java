@@ -22,17 +22,17 @@ public interface TopicHandler {
 
     /**
      * 从消息体中获取Topic
-     * @param message 消息体
+     * @param bytes 消息体
      * @return Topic
      */
-    String getTopic(String message);
+    String getTopic(byte[] bytes);
 
     /**
      * 为消息体设置Topic
      * @param topic Topic
-     * @param message 原始消息体
+     * @param bytes 原始消息体
      * @return 设置Topic后的消息体
      */
-    String setTopic(String topic, String message);
+    byte[] setTopic(String topic, byte[] bytes);
 
 }

@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import lombok.NonNull;
 
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,18 +26,18 @@ public class JsonMessageTopicHandler implements TopicHandler {
     }
 
     @Override
-    public String getTopic(String message) {
-        Map<String, Object> map = this.gson.fromJson(message,mapType);
+    public String getTopic(byte[] message) {
+        Map<String, Object> map = this.gson.fromJson(new String(message),mapType);
         return Optional.ofNullable(map.get(this.topicName))
                 .map(Object::toString)
                 .orElse(null);
     }
 
     @Override
-    public String setTopic(String topic, String message) {
-        Map<String, Object> map = this.gson.fromJson(message,mapType);
+    public byte[] setTopic(String topic, byte[] message) {
+        Map<String, Object> map = this.gson.fromJson(new String(message),mapType);
         map.put(this.topicName,topic);
-        return this.gson.toJson(map);
+        return this.gson.toJson(map).getBytes(StandardCharsets.UTF_8);
     }
 
 }

@@ -1,10 +1,11 @@
 package tech.guyi.component.message.stream.api.stream;
 
 import lombok.NonNull;
-import reactor.core.publisher.Flux;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * 消息流接口 <br />
@@ -28,9 +29,27 @@ public interface MessageStream {
     void close();
 
     /**
-     * 打开消息流
-     * @return 消息
+     * 注册消息主题
+     * @param topic 消息主题
      */
-    Flux<Message> open(Set<String> topics);
+    void register(String topic);
+
+    /**
+     * 取消消息主题的注册
+     * @param topic 消息主题
+     */
+    void unregister(String topic);
+
+    /**
+     * 打开消息流
+     * @param receiver 消息接收者
+     */
+    void open(Consumer<Message> receiver);
+
+    /**
+     * 发布消息
+     * @param message 消息实体
+     */
+    void publish(Message message);
 
 }

@@ -1,17 +1,15 @@
 package tech.guyi.component.message.stream.email;
 
 import lombok.NonNull;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.AntPathMatcher;
-import tech.guyi.component.message.stream.api.MessageStream;
-import tech.guyi.component.message.stream.api.entry.Message;
-import tech.guyi.component.message.stream.api.entry.MessageConsumerEntry;
+import tech.guyi.component.message.stream.api.stream.MessageStream;
+import tech.guyi.component.message.stream.api.stream.entry.Message;
 import tech.guyi.component.message.stream.email.extract.TitleExtractor;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * 基于邮件实现的消息流 <br />
@@ -20,10 +18,7 @@ import java.util.stream.Collectors;
  * @author guyi
  * @date 2021/1/16 15:30
  */
-public class EmailMessageStream implements MessageStream, InitializingBean {
-
-    private final AntPathMatcher matcher = new AntPathMatcher();
-    private final List<MessageConsumerEntry> consumers = new LinkedList<>();
+public class EmailMessageStream implements MessageStream {
 
 
     @Resource
@@ -37,48 +32,42 @@ public class EmailMessageStream implements MessageStream, InitializingBean {
     }
 
     @Override
-    public void publish(Message message) {
-        String title = this.extractor.getTitle(message.getTopic());
-        this.service.send(message.getAddress(), title, new String(message.getContent()));
-    }
-
-    @Override
-    public void register(MessageConsumerEntry consumer) {
-        this.consumers.add(consumer);
-    }
-
-    @Override
-    public void unregister(String topic) {
-        this.consumers.stream()
-                .filter(consumer -> consumer.getTopic().contains(topic))
-                .collect(Collectors.toList())
-                .forEach(consumer -> {
-                    if (consumer.getTopic().size() == 1){
-                        this.consumers.remove(consumer);
-                    }else{
-                        consumer.getTopic().remove(topic);
-                    }
-                });
-    }
-
-    @Override
     public void close() {
-        this.consumers.clear();
         this.service.close();
     }
 
     @Override
-    public void afterPropertiesSet() {
+    public void register(String topic) {
+
+    }
+
+    @Override
+    public void unregister(String topic) {
+
+    }
+
+    @Override
+    public void open(Consumer<Message> receiver) {
         this.service.onEmail(email -> {
             String topic = this.extractor.getTopic(email.getTitle());
-            Message message = new Message();
-            message.setStream(this.getName());
-            message.setTopic(topic);
-            message.setContent(email.getContent().getBytes(StandardCharsets.UTF_8));
-            message.setAddress(email.getSource());
-            this.consumers.stream()
-                    .filter(consumer -> consumer.getTopic().stream().anyMatch(t -> matcher.match(t,topic)))
-                    .forEach(consumer -> consumer.getReceiver().accept(message));
+            receiver.accept(new Message(
+                    topic,
+                    email.getContent().getBytes(StandardCharsets.UTF_8),
+                    Collections.singletonMap("address",email.getSource())
+            ));
         });
     }
+
+    @Override
+    public void publish(Message message) {
+        // 如果附加信息中不存在收件人地址, 则丢弃该消息
+        Optional.ofNullable(message.getAttach())
+                .map(attach -> attach.get("address"))
+                .map(Object::toString)
+                .ifPresent(address -> {
+                    String title = this.extractor.getTitle(message.getTopic());
+                    this.service.send(address, title, new String(message.getBytes()));
+                });
+    }
+
 }
