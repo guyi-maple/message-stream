@@ -45,6 +45,9 @@ public class MessageStreams implements InitializingBean {
                 message.getAttach(),
                 message.getBytes()
         )));
+
+        // 回调消息流打开钩子
+        this.hookRunner.run(MessageStreamHook.STREAM_OPEN, this.streams.keySet());
     }
 
     /**
