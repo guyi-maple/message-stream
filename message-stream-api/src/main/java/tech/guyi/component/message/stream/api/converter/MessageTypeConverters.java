@@ -2,7 +2,7 @@ package tech.guyi.component.message.stream.api.converter;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
-import tech.guyi.component.message.stream.api.converter.exception.NotFoundTypeConverter;
+import tech.guyi.component.message.stream.api.converter.exception.NotFoundTypeConverterException;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
@@ -53,8 +53,8 @@ public class MessageTypeConverters implements InitializingBean {
         return this.converters.stream()
                 .filter(converter -> converter.forType().isAssignableFrom(type))
                 .findFirst()
-                .map(converter -> type.cast(converter.from(bytes)))
-                .orElseThrow(() -> new NotFoundTypeConverter(type));
+                .map(converter -> type.cast(converter.from(bytes,type)))
+                .orElseThrow(() -> new NotFoundTypeConverterException(type));
     }
 
 }

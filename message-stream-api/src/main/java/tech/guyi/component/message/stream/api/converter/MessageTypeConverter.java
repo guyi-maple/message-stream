@@ -17,6 +17,15 @@ public interface MessageTypeConverter<M> {
     M from(byte[] bytes);
 
     /**
+     * 从byte数组转换
+     * @param bytes byte数组
+     * @param type 返回类型
+     * @param <R> 返回类型
+     * @return 消息
+     */
+    <R extends M> R from(byte[] bytes, Class<R> type);
+
+    /**
      * 消息转换为byte数组
      * @param message 消息
      * @return byte数组

@@ -21,6 +21,11 @@ public class StringMessageTypeConverter implements MessageTypeConverter<String> 
     }
 
     @Override
+    public <R extends String> R from(byte[] bytes, Class<R> type) {
+        return type.cast(new String(bytes));
+    }
+
+    @Override
     public byte[] to(String message) {
         return message.getBytes(StandardCharsets.UTF_8);
     }

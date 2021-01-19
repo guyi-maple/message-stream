@@ -1,5 +1,7 @@
 package tech.guyi.component.message.stream.api.consumer;
 
+import lombok.extern.slf4j.Slf4j;
+import tech.guyi.component.message.stream.api.converter.exception.NotFoundTypeConverterException;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHook;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHookRunner;
 import tech.guyi.component.message.stream.api.worker.MessageStreamWorker;
@@ -15,6 +17,7 @@ import java.util.*;
  * @author guyi
  * @date 2021/1/18 22:31
  */
+@Slf4j
 public class MessageConsumers {
 
     @Resource
@@ -41,7 +44,13 @@ public class MessageConsumers {
      */
     public void onMessage(String topic, String stream, Map<String,Object> attach, byte[] bytes, MessageConsumer consumer){
         Class<?> type = consumer.messageType();
-        this.worker.submit(() -> consumer.accept(this.converters.convert(bytes, type), topic, stream, attach));
+        this.worker.submit(() -> {
+            try{
+                consumer.accept(this.converters.convert(bytes, type), topic, stream, attach);
+            }catch (Exception e){
+                log.error("消息消费异常", e);
+            }
+        });
     }
 
     /**
