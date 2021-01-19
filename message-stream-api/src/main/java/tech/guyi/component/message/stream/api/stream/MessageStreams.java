@@ -72,12 +72,13 @@ public class MessageStreams implements InitializingBean {
      * @param streams 要注册到的消息流
      */
     public void register(String topic, List<String> streams){
-        Optional.ofNullable(streams)
-                .filter(s -> !s.isEmpty())
-                .map(this.streams::get)
-                .map(s -> (Collection<MessageStream>) s)
-                .orElse(this.getStreams())
-                .forEach(stream -> stream.register(topic));
+        Collection<MessageStream> ss;
+        if (streams == null || streams.isEmpty()){
+            ss = this.getStreams();
+        }else{
+            ss = streams.stream().map(this.streams::get).collect(Collectors.toList());
+        }
+        ss.forEach(stream -> stream.register(topic));
         log.info("Subscribe Topic {}", topic);
     }
 
