@@ -13,6 +13,7 @@
         <module>message-stream-rabbitmq</module>
         <module>message-stream-email</module>
         <module>message-stream-websocket</module>
+        <module>message-stream-redis</module>
     </modules>
 
     <properties>
