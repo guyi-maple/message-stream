@@ -1,10 +1,12 @@
 package tech.guyi.component.message.stream.api.converter.defaults;
 
+
 import tech.guyi.component.message.stream.api.converter.MessageTypeConverter;
 
 import java.nio.charset.StandardCharsets;
 
 /**
+ * 字符串消息类型转换器 <br />
  * @author guyi
  * @date 2021/1/19 00:17
  */

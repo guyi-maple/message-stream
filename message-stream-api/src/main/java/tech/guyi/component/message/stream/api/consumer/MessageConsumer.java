@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 消息消费者接口 <br />
  * @author guyi
  * @date 2021/1/16 12:51
  */

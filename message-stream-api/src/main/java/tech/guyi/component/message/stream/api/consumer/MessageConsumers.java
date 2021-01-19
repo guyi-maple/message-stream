@@ -1,7 +1,6 @@
 package tech.guyi.component.message.stream.api.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import tech.guyi.component.message.stream.api.converter.exception.NotFoundTypeConverterException;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHook;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHookRunner;
 import tech.guyi.component.message.stream.api.worker.MessageStreamWorker;

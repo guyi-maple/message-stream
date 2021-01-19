@@ -1,6 +1,5 @@
 package tech.guyi.component.message.stream.api;
 
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import tech.guyi.component.message.stream.api.stream.MessageStreams;
@@ -13,7 +12,7 @@ import javax.annotation.Resource;
  * @author guyi
  * @date 2021/1/16 14:20
  */
-public class OnApplicationContextClose implements ApplicationListener<ContextClosedEvent>, InitializingBean {
+public class OnApplicationContextClose implements ApplicationListener<ContextClosedEvent> {
 
     @Resource
     private MessageStreams streams;
@@ -25,16 +24,13 @@ public class OnApplicationContextClose implements ApplicationListener<ContextClo
         // 关闭所有消息流
         this.streams.close();
         // 关闭工作空间
-        this.worker.shutdownNow();
+        this.worker.shutdown();
     }
 
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
+        // 当Spring容器关闭时关闭消息流
         this.close();
     }
 
-    @Override
-    public void afterPropertiesSet() {
-        Runtime.getRuntime().addShutdownHook(new Thread(this::close));
-    }
 }

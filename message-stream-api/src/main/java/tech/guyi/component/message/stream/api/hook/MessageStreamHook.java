@@ -14,7 +14,7 @@ import java.util.Set;
  * 消息流各流程事件的回调 <br />
  * @author guyi
  * @date 2021/1/18 17:40
- * @param <E>
+ * @param <E> 执行参数类型
  */
 public interface MessageStreamHook<E> {
 
@@ -27,6 +27,10 @@ public interface MessageStreamHook<E> {
     // 消息流打开钩子
     MessageStreamHookType<Set<String>, MessageStreamOpenHook> STREAM_OPEN = MessageStreamHookType.valueOf(MessageStreamOpenHook.class);
 
+    /**
+     * 当钩子被执行时调用
+     * @param entry 执行参数
+     */
     void on(E entry);
 
 }

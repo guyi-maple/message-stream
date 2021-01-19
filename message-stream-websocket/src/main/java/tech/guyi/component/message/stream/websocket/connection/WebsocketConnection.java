@@ -59,9 +59,4 @@ public class WebsocketConnection extends WebSocketClient {
         Optional.ofNullable(this.onError).ifPresent(on -> on.accept(e));
     }
 
-    @Override
-    public void send(String text) {
-        System.out.println("发送消息 " + text);
-        super.send(text);
-    }
 }

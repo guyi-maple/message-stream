@@ -5,15 +5,19 @@ import org.springframework.util.AntPathMatcher;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
+ * 匹配工具 <br />
+ * 多用于匹配消息流推送的消息Topic与消费者要消费的Topic是否匹配 <br />
+ * 内部使用线程安全的队列保证此工具的线程安全, 匹配器使用后需要调用roll方法, 将匹配器归还到队列中
  * @author guyi
  * @date 2021/1/18 22:46
  */
 public class AntPathMatchers {
 
     // 匹配器队列
-    private final Queue<AntPathMatcher> matchers = new LinkedList<>();
+    private final Queue<AntPathMatcher> matchers = new ConcurrentLinkedQueue<>();
 
     /**
      * 获取匹配器 <br />

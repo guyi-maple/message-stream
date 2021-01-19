@@ -51,6 +51,10 @@ public class EmailService implements InitializingBean {
         }
     }
 
+    /**
+     * 拉取服务器收件箱中的邮件 <br />
+     * 邮件拉取完成后将会被置为已读状态
+     */
     @SneakyThrows
     private void pullEmail(){
         try{
@@ -58,20 +62,29 @@ public class EmailService implements InitializingBean {
             Store store = this.getStore(session);
             Folder folder = this.getFolder(store);
 
+            // 邮件缓存集合
             List<Message> messages = new LinkedList<>();
+            // 获取邮件总数
             int length = folder.getMessageCount();
+            // 获取未读邮件总数
             int unread = folder.getUnreadMessageCount();
             for (int i = 0; i < unread; i++) {
+                // 获取未读邮件并推送
                 MimeMessage message = (MimeMessage) folder.getMessage(length--);
                 message.setFlag(Flags.Flag.SEEN, true);
                 EmailMessage email = EmailMessage.from(message);
                 for (Consumer<EmailMessage> consumer : this.consumers) {
                     consumer.accept(email);
                 }
+
+                //将邮件加入缓存集合
                 messages.add(message);
             }
 
+            // 将邮件缓存集合中的邮件置为已读
             folder.setFlags(messages.toArray(new Message[0]), new Flags(Flags.Flag.SEEN), true);
+
+            // 资源清理
             folder.close(false);
             store.close();
         }catch (Exception e){
@@ -79,6 +92,7 @@ public class EmailService implements InitializingBean {
         }
     }
 
+    // 替换邮件协议
     private String replaceProtocol(String key,String protocol){
         return String.format(key,protocol);
     }

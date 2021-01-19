@@ -9,6 +9,7 @@ import tech.guyi.component.message.stream.kafka.configuration.KafkaConsumerConfi
 import tech.guyi.component.message.stream.kafka.configuration.KafkaProducerConfiguration;
 
 /**
+ * 自动装配
  * @author guyi
  * @date 2021/1/19 16:06
  */

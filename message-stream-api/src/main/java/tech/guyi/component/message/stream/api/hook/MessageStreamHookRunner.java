@@ -26,6 +26,13 @@ public class MessageStreamHookRunner implements InitializingBean {
                 .forEach(hooks::add);
     }
 
+    /**
+     * 执行钩子
+     * @param type 钩子类型
+     * @param entry 执行参数
+     * @param <E> 执行参数类型
+     * @param <H> 钩子类型
+     */
     public <E,H extends MessageStreamHook<E>> void run(MessageStreamHookType<E,H> type, E entry){
         this.hooks.stream()
                 .filter(hook -> type.getClasses().isAssignableFrom(hook.getClass()))

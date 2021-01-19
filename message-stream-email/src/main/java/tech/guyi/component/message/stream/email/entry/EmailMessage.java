@@ -18,8 +18,17 @@ import java.util.regex.Pattern;
 @Data
 public class EmailMessage {
 
+    /**
+     * 邮件主题
+     */
     private String title;
+    /**
+     * 邮件内容
+     */
     private String content;
+    /**
+     * 邮件发送者
+     */
     private String source;
 
     private static String getContent(MimeMessage message) throws MessagingException, IOException {

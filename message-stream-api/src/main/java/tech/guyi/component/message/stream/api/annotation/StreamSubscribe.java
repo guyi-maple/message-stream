@@ -9,8 +9,7 @@ import java.lang.annotation.Target;
  * 消息监听注解 <br />
  * 将此注解放置与方法上, 被注解的方法将会被注册为消息监听者 <br />
  * 此注解只有放置在被public修改的方法上才会生效 <br />
- * 此注解只有放置在Bean中的方法上才会生效 <br />
- * 被此注解的方法入参必须为 tech.guyi.component.message.stream.api.entry.Message 否则注解无效
+ * 此注解只有放置在Spring容器Bean中的方法上才会生效 <br />
  * @author guyi
  * @date 2021/1/15 18:23
  */

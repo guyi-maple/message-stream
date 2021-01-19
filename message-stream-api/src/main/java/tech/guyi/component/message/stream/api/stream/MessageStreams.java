@@ -67,7 +67,10 @@ public class MessageStreams implements InitializingBean {
     }
 
     /**
-     * 注册消息主题
+     * 注册消息主题 <br />
+     * 实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制 <br />
+     * 此方式作用仅为通知消息流 <br />
+     * 此方法应只被消费者仓库调用 <br />
      * @param topic 消息主题
      * @param streams 要注册到的消息流
      */
@@ -84,6 +87,9 @@ public class MessageStreams implements InitializingBean {
 
     /**
      * 取消消息主题的注册
+     * 实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制 <br />
+     * 此方式作用仅为通知消息流 <br />
+     * 此方法应只被消费者仓库调用 <br />
      * @param topic 消息主题
      * @param streams 要取消的消息流
      */

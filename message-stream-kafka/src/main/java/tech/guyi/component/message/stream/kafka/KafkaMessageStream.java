@@ -15,7 +15,6 @@ import tech.guyi.component.message.stream.kafka.configuration.KafkaConfiguration
 import javax.annotation.Resource;
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
@@ -34,8 +33,6 @@ public class KafkaMessageStream implements MessageStream {
     private KafkaProducer<String,byte[]> producer;
     // 消费者
     private KafkaConsumer<String,byte[]> consumer;
-    // 消费线程
-    private Future<?> future;
     // 是否消息信息
     private boolean run;
 
@@ -75,7 +72,7 @@ public class KafkaMessageStream implements MessageStream {
         this.consumer = new KafkaConsumer<>(props);
         this.consumer.subscribe(configuration.getConsumer().getTopic());
         this.run = true;
-        this.future = this.worker.submit(this::pullMessage);
+        this.worker.submit(this::pullMessage);
     }
 
     // 拉取消息
@@ -88,19 +85,17 @@ public class KafkaMessageStream implements MessageStream {
                             .forEach(record -> this.receiver.accept(new Message(record.key(),record.value())));
                 }catch (WakeupException wakeupException){}
             }catch (Exception e) {
-                e.printStackTrace();
                 log.error("Kafka消息拉取异常", e);
             }
         }
+        this.consumer.close();
     }
 
     @Override
     public void close() {
         // 让消费者线程跳出死循环, 关闭消费者
         this.run = false;
-        this.consumer.close();
-        this.future.cancel(true);
-
+        // 关闭生产者
         this.producer.close();
     }
 

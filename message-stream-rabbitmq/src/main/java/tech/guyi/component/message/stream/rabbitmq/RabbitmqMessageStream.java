@@ -43,6 +43,10 @@ public class RabbitmqMessageStream implements MessageStream {
         this.connection.close();
     }
 
+    /**
+     * 当有新的消息主题被注册时, 将消息主题转为RouterKey, 与队列及路由器绑定
+     * @param topic 消息主题
+     */
     @Override
     @SneakyThrows
     public void register(String topic) {
@@ -55,6 +59,10 @@ public class RabbitmqMessageStream implements MessageStream {
         });
     }
 
+    /**
+     * 当有消息主题被取消注册时, 将消息主题转为RouterKey, 与队列及路由器解除绑定
+     * @param topic 消息主题
+     */
     @Override
     @SneakyThrows
     public void unregister(String topic) {
@@ -73,12 +81,16 @@ public class RabbitmqMessageStream implements MessageStream {
 
         this.connection = factory.newConnection();
         this.channel = this.connection.createChannel();
+
+        // 声明队列
+        // 当队列在服务器中不存在时则被创建
         channel.queueDeclare(configuration.getQueue(), false, false, false, null);
     }
 
     @Override
     @SneakyThrows
     public void publish(Message message) {
+        // topic转为routerKey
         String key = this.replaceTopic(message.getTopic());
         this.channel.basicPublish(configuration.getExchange(),key,null,message.getBytes());
     }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 消息发布者
+ * 消息发布工具
  * @author guyi
  * @date 2021/1/19 10:09
  */
