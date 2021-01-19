@@ -1,6 +1,6 @@
 # message-stream-rabbitmq
 
-基于rabbitmq实现的消息流
+基于Rabbitmq实现的消息流
 
 ## 启用
 
@@ -19,3 +19,9 @@ message:
       exchange: <交换机名称: amq.topic>
       virtual-host: <虚拟主机: />
 ```
+
+## 配置
+
+配置说明请参见源码注释
+
+[基础配置: message.stream.rabbitmq](./src/main/java/tech/guyi/component/message/stream/rabbitmq/RabbitmqAutoConfiguration.java)
