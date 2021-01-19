@@ -45,7 +45,8 @@ public class MessageConsumers {
         Class<?> type = consumer.messageType();
         this.worker.submit(() -> {
             try{
-                consumer.accept(this.converters.convert(bytes, type), topic, stream, attach);
+                // 当消费者指定的消息类型为byte数组时, 无需做类型转换
+                consumer.accept(type == byte[].class ? bytes : this.converters.convert(bytes, type), topic, stream, attach);
             }catch (Exception e){
                 log.error("消息消费异常", e);
             }
