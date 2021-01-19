@@ -17,7 +17,7 @@ import java.util.List;
 public class MessageTypeConverters implements InitializingBean {
 
     // 消息类型转换器集合
-    private final List<MessageTypeConverter<Object, T>> converters = new LinkedList<>();
+    private final List<MessageTypeConverter<Object>> converters = new LinkedList<>();
 
     @Resource
     private ApplicationContext context;
