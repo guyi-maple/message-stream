@@ -1,5 +1,6 @@
 package tech.guyi.component.message.stream.api.stream;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.ObjectUtils;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
  * @author guyi
  * @date 2021/1/16 12:58
  */
+@Slf4j
 public class MessageStreams implements InitializingBean {
 
     // 消息流集合
@@ -73,6 +75,7 @@ public class MessageStreams implements InitializingBean {
                 .map(s -> (Collection<MessageStream>) s)
                 .orElse(this.getStreams())
                 .forEach(stream -> stream.register(topic));
+        log.info("Subscribe Topic {}", topic);
     }
 
     /**
@@ -87,6 +90,7 @@ public class MessageStreams implements InitializingBean {
                 .map(s -> (Collection<MessageStream>) s)
                 .orElse(this.getStreams())
                 .forEach(stream -> stream.unregister(topic));
+        log.info("UnSubscribe Topic {}", topic);
     }
 
     /**
