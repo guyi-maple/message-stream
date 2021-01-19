@@ -1,48 +1,27 @@
 # message-stream
-统一消息流API
 
-## API
+为消息监听者提供统一的消息监听API。
 
-### 消息消费者接口
+让切换不同的消息来源变得更简单。
 
-实现接口 [MessageConsumer](./message-stream-api/src/main/java/tech/guyi/component/message/stream/api/consumer/MessageConsumer.java) , 并将其注册到Spring容器中，即可监听消息。
+根据上层业务无需变动代码, 只需修改配置即可做到切换消息的来源。
 
-``` java
-@Component
-public class MessageReceiver implements MessageConsumer {
+如： 将Rabbitmq切换为Kafka, 不需要修改业务侧代码, 只需修改配置即可切换。
 
-    @Override
-    public List<String> getTopic() {
-        return Collections.singletonList("/test/123");
-    }
+还可支持多个消息来源的同时消费与发布。
 
-    @Override
-    public void accept(Message message) {
-        System.out.println(new String(message.getContent()));
-    }
+如：同时消费来自Rabbitmq、Kafka、Websocket的消息, 同时向 Rabbitmq、Kafka、Websocket 发送消息。
 
-}
-```
+随着下层消息流实现的增加, 可以实现更多的消息统一消费方式, 如文件、FTP、OSS、UDP、TCP等等, 终极目标是统一所有的IO输出。
 
-### 基于注解监听消息
+# 使用API
 
-在Bean的公共方法上添加注解 [MessageListener](./message-stream-api/src/main/java/tech/guyi/component/message/stream/api/annotation/MessageListener.java) 即可监听消息。
+API使用请参见子模块 [message-stream-api](./message-stream-api) 文档。
 
-``` java
-@MessageListener(topic = "/test/*")
-public void onMessage(Message message){
-    System.out.println(message.getTopic());
-    System.out.println(new String(message.getContent()));
-}
-```
+# 已支持消息流
 
-## 自定义消息流
-
-实现接口 [MessageStream](./message-stream-api/src/main/java/tech/guyi/component/message/stream/api/MessageStream.java) , 即可实现自己的消息流。
-
-详细请参见实现 [RabbitmqMessageStream](./message-stream-rabbitmq/src/main/java/tech/guyi/component/message/stream/rabbitmq/RabbitmqMessageStream.java)
-
-## 已实现消息流
-
-* [基于Rabbitmq的消息流](./message-stream-rabbitmq)
-* [基于邮件的消息流](./message-stream-email)
+* [邮件](./message-stream-email)
+* [Kafka](./message-stream-kafka)
+* [Rabbitmq](./message-stream-rabbitmq)
+* [Redis](./message-stream-redis)
+* [Websocket](./message-stream-websocket)
