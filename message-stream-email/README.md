@@ -9,7 +9,7 @@
 * 接收消息时, Message中的address表示为发送者账户
 * 发布消息时必须指定address, 表示要发送给的邮件账户
 
-## 启动
+## 启用
 
 ``` yaml
 message:

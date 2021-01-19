@@ -12,7 +12,7 @@
 
 如：同时消费来自Rabbitmq、Kafka、Websocket的消息, 同时向 Rabbitmq、Kafka、Websocket 发送消息。
 
-随着下层消息流实现的增加, 可以实现更多的消息统一消费方式, 如文件、FTP、OSS、UDP、TCP等等, 终极目标是统一所有的IO输出。
+随着下层消息流实现的增加, 可以实现更多的消息统一消费方式, 如文件、FTP、OSS、UDP、TCP等等, 终极目标是统一所有的输入及输出。
 
 [使用文档](./message-stream-api)
 
