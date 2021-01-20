@@ -18,10 +18,10 @@ public class KafkaConsumerConfiguration implements ConfigurationInterface {
     private String bootstrapServers;
 
     /**
-     * 是否启用消息者 <br />
+     * 是否启用消费者 <br />
      * 默认启用
      */
-    private boolean enable;
+    private boolean enable = true;
 
     /**
      * topic <br />
