@@ -111,8 +111,13 @@ public class KafkaMessageStream implements MessageStream {
     public void open(Consumer<Message> receiver) {
         // 打开生产者连接
         this.openProducer();
-        // 打开消费者连接
-        this.openConsumer();
+
+        // 如果启用了消息者
+        if (this.configuration.getConsumer().isEnable()){
+            // 打开消费者连接
+            this.openConsumer();
+        }
+
         // 缓存消息接收者
         this.receiver = receiver;
     }

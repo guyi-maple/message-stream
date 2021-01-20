@@ -24,6 +24,7 @@ public class KafkaConfiguration {
      * 是否启用
      */
     private boolean enable;
+
     /**
      * 服务器地址
      */
