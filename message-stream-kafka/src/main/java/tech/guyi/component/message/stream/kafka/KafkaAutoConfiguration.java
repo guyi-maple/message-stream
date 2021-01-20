@@ -24,13 +24,13 @@ public class KafkaAutoConfiguration {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "message.stream.producer")
+    @ConfigurationProperties(prefix = "message.stream.kafka.producer")
     public KafkaProducerConfiguration kafkaProducerConfiguration(){
         return new KafkaProducerConfiguration();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "message.stream.consumer")
+    @ConfigurationProperties(prefix = "message.stream.kafka.consumer")
     public KafkaConsumerConfiguration kafkaConsumerConfiguration(){
         return new KafkaConsumerConfiguration();
     }
