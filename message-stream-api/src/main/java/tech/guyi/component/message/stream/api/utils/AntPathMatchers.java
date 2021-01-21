@@ -8,11 +8,10 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * 匹配工具 <br />
- * 多用于匹配消息流推送的消息Topic与消费者要消费的Topic是否匹配 <br />
+ * 匹配工具.
+ * 多用于匹配消息流推送的消息Topic与消费者要消费的Topic是否匹配.
  * 内部使用线程安全的队列保证此工具的线程安全, 匹配器使用后需要调用roll方法, 将匹配器归还到队列中
  * @author guyi
- * @date 2021/1/18 22:46
  */
 public class AntPathMatchers {
 
@@ -20,7 +19,7 @@ public class AntPathMatchers {
     private final Queue<AntPathMatcher> matchers = new ConcurrentLinkedQueue<>();
 
     /**
-     * 获取匹配器 <br />
+     * 获取匹配器.
      * 如果匹配器队列中没有匹配器, 则创建一个新的匹配器
      * @return 匹配器
      */

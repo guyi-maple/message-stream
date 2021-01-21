@@ -10,7 +10,6 @@ import javax.annotation.Resource;
 /**
  * 容器关闭事件回调
  * @author guyi
- * @date 2021/1/16 14:20
  */
 public class OnApplicationContextClose implements ApplicationListener<ContextClosedEvent> {
 

@@ -12,11 +12,10 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * 基于邮件实现的消息流 <br />
- * 收到的邮件表示消息流的输入 <br />
- * 发布消息表示发送邮件 <br />
+ * 基于邮件实现的消息流.
+ * 收到的邮件表示消息流的输入.
+ * 发布消息表示发送邮件.
  * @author guyi
- * @date 2021/1/16 15:30
  */
 public class EmailMessageStream implements MessageStream {
 

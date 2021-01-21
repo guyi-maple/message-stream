@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * 消息发布钩子执行参数
  * @author guyi
- * @date 2021/1/19 09:48
  */
 @Getter
 @AllArgsConstructor

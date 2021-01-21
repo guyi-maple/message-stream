@@ -11,7 +11,6 @@ import java.util.function.Consumer;
 
 /**
  * @author guyi
- * @date 2021/1/16 00:04
  */
 public class RabbitmqMessageStream implements MessageStream {
 

@@ -5,7 +5,6 @@ import lombok.Data;
 /**
  * Rabbitmq配置
  * @author guyi
- * @date 2021/1/16 12:36
  */
 @Data
 public class RabbitmqConfiguration {

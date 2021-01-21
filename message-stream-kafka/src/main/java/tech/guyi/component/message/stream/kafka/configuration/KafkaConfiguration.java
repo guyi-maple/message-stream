@@ -8,7 +8,6 @@ import java.util.Optional;
 
 /**
  * @author guyi
- * @date 2021/1/19 16:06
  */
 @Data
 public class KafkaConfiguration {
@@ -31,7 +30,7 @@ public class KafkaConfiguration {
     private String bootstrapServers;
 
     /**
-     * 获取服务器地址 <br />
+     * 获取服务器地址.
      * 如果子配置不存在该配置项, 则使用基础配置中的值
      * @param type 类型
      * @return 服务器地址

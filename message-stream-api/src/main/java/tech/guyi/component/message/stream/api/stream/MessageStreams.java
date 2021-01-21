@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 /**
  * 消息流仓库
  * @author guyi
- * @date 2021/1/16 12:58
  */
 @Slf4j
 public class MessageStreams implements InitializingBean {
@@ -67,10 +66,10 @@ public class MessageStreams implements InitializingBean {
     }
 
     /**
-     * 注册消息主题 <br />
-     * 实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制 <br />
-     * 此方式作用仅为通知消息流 <br />
-     * 此方法应只被消费者仓库调用 <br />
+     * 注册消息主题.
+     * 实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制.
+     * 此方式作用仅为通知消息流.
+     * 此方法应只被消费者仓库调用.
      * @param topic 消息主题
      * @param streams 要注册到的消息流
      */
@@ -87,9 +86,9 @@ public class MessageStreams implements InitializingBean {
 
     /**
      * 取消消息主题的注册
-     * 实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制 <br />
-     * 此方式作用仅为通知消息流 <br />
-     * 此方法应只被消费者仓库调用 <br />
+     * 实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制.
+     * 此方式作用仅为通知消息流.
+     * 此方法应只被消费者仓库调用.
      * @param topic 消息主题
      * @param streams 要取消的消息流
      */
@@ -126,8 +125,8 @@ public class MessageStreams implements InitializingBean {
     }
 
     /**
-     * 向消息流发布消息 <br />
-     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息 <br />
+     * 向消息流发布消息.
+     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.
      * 如果消息实体中stream指定的消息流不存在, 则会丢弃该消息
      * @param topic 消息主题
      * @param bytes 消息内容

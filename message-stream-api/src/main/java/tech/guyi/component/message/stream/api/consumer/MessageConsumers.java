@@ -14,7 +14,6 @@ import java.util.*;
 /**
  * 消息消费者仓库
  * @author guyi
- * @date 2021/1/18 22:31
  */
 @Slf4j
 public class MessageConsumers {

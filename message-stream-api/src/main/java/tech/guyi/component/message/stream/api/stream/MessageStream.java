@@ -8,15 +8,14 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * 消息流接口 <br />
+ * 消息流接口.
  * 实现此接口,获取不同来源的消息
  * @author guyi
- * @date 2021/1/15 22:58
  */
 public interface MessageStream {
 
     /**
-     * 消息流名称 <br />
+     * 消息流名称.
      * 用来标识不同的消息流, 不可重复或返回NULL
      * @return 消息流名称
      */

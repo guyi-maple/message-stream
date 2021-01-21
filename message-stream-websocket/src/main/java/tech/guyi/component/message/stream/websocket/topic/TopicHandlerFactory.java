@@ -8,7 +8,6 @@ import java.util.List;
 /**
  * Topic处理器工厂
  * @author guyi
- * @date 2021/1/18 16:09
  */
 public class TopicHandlerFactory {
 
@@ -20,7 +19,7 @@ public class TopicHandlerFactory {
     private JsonMessageTopicHandler defaultHandler;
 
     /**
-     * 获取处理器 <br />
+     * 获取处理器.
      * 如果不存在指定的处理器, 则返回默认的JSON格式处理器
      * @return 处理器
      */

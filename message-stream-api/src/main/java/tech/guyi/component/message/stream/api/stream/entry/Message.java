@@ -8,7 +8,6 @@ import java.util.Map;
 /**
  * 消息流向上层推送消息的实体
  * @author guyi
- * @date 2021/1/18 23:21
  */
 @Data
 public class Message {

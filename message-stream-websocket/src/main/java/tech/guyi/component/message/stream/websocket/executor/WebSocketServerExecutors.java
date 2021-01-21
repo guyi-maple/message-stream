@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 /**
  * 表达式替换
  * @author guyi
- * @date 2021/1/19 13:14
  */
 public class WebSocketServerExecutors {
 
@@ -21,8 +20,8 @@ public class WebSocketServerExecutors {
 
     /**
      * 替换表达式
-     * @param text
-     * @return
+     * @param text 原始文本
+     * @return 替换后的文本
      */
     public String replace(String text){
         Matcher matcher = pattern.matcher(text);

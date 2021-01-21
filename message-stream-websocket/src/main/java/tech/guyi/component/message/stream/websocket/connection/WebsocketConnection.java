@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 /**
  * Websocket连接
  * @author guyi
- * @date 2021/1/18 16:52
  */
 public class WebsocketConnection extends WebSocketClient {
 

@@ -11,7 +11,6 @@ import tech.guyi.component.message.stream.kafka.configuration.KafkaProducerConfi
 /**
  * 自动装配
  * @author guyi
- * @date 2021/1/19 16:06
  */
 @Configuration
 @ConditionalOnProperty(value = "message.stream.kafka.enable", havingValue = "true", matchIfMissing = true)

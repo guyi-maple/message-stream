@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 /**
  * 邮件标题提取器
  * @author guyi
- * @date 2021/1/16 19:51
  */
 @Data
 public class TitleExtractor {

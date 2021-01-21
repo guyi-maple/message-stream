@@ -10,10 +10,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 消息流钩子 <br />
- * 消息流各流程事件的回调 <br />
+ * 消息流钩子.
+ * 消息流各流程事件的回调.
  * @author guyi
- * @date 2021/1/18 17:40
  * @param <E> 执行参数类型
  */
 public interface MessageStreamHook<E> {

@@ -24,7 +24,6 @@ import java.util.function.Consumer;
 /**
  * 基于Websocket实现的消息流
  * @author guyi
- * @date 2021/1/18 14:54
  */
 @Slf4j
 public class WebSocketMessageStream implements MessageStream {

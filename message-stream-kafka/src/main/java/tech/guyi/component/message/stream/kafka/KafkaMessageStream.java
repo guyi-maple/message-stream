@@ -19,7 +19,6 @@ import java.util.function.Consumer;
 
 /**
  * @author guyi
- * @date 2021/1/19 16:08
  */
 @Slf4j
 public class KafkaMessageStream implements MessageStream {

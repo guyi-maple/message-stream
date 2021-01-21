@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * @author guyi
- * @date 2021/1/19 16:11
  */
 @Data
 public class KafkaProducerConfiguration implements ConfigurationInterface {
@@ -18,7 +17,7 @@ public class KafkaProducerConfiguration implements ConfigurationInterface {
     private String bootstrapServers;
 
     /**
-     * topic <br />
+     * topic.
      * 默认值 message.stream
      */
     private String topic = "message.stream";
@@ -29,7 +28,7 @@ public class KafkaProducerConfiguration implements ConfigurationInterface {
     private String acks = "all";
 
     /**
-     * 重试次数 <br />
+     * 重试次数.
      * 默认不重试
      */
     private int retries = 0;

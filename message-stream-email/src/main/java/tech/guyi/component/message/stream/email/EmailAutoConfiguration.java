@@ -13,7 +13,6 @@ import tech.guyi.component.message.stream.email.extract.TitleExtractor;
 /**
  * 自动配置
  * @author guyi
- * @date 2021/1/16 15:19
  */
 @Configuration
 @ConditionalOnProperty(value = "message.stream.email.enable", havingValue = "true", matchIfMissing = true)

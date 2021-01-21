@@ -10,7 +10,6 @@ import java.util.Map;
 /**
  * 消息发布工具
  * @author guyi
- * @date 2021/1/19 10:09
  */
 public class MessageStreamPublisher {
 
@@ -20,8 +19,8 @@ public class MessageStreamPublisher {
     private MessageTypeConverters converters;
 
     /**
-     * 向消息流发布消息 <br />
-     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息 <br />
+     * 向消息流发布消息.
+     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.
      * 如果消息实体中stream指定的消息流不存在, 则会丢弃该消息
      * @param topic 消息主题
      * @param bytes 消息内容
@@ -33,8 +32,8 @@ public class MessageStreamPublisher {
     }
 
     /**
-     * 向消息流发布消息 <br />
-     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息 <br />
+     * 向消息流发布消息.
+     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.
      * 如果消息实体中stream指定的消息流不存在, 则会丢弃该消息
      * @param topic 消息主题
      * @param bytes 消息内容
@@ -65,44 +64,48 @@ public class MessageStreamPublisher {
 
 
     /**
-     * 向消息流发布消息 <br />
-     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息 <br />
+     * 向消息流发布消息.
+     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.
      * 如果消息实体中stream指定的消息流不存在, 则会丢弃该消息
      * @param topic 消息主题
      * @param message 消息内容
      * @param attach 附加信息
      * @param streams 要发布到的消息流, 为空表示发布到全部
+     * @param <T> 消息类型
      */
     public <T> void publish(String topic, T message, Map<String,Object> attach, List<String> streams){
         this.publish(topic,this.converters.convert(message),attach,streams);
     }
 
     /**
-     * 向消息流发布消息 <br />
-     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息 <br />
+     * 向消息流发布消息.
+     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.
      * 如果消息实体中stream指定的消息流不存在, 则会丢弃该消息
      * @param topic 消息主题
      * @param message 消息内容
      * @param streams 要发布到的消息流, 为空表示发布到全部
+     * @param <T> 消息类型
      */
     public <T> void publish(String topic, T message, List<String> streams){
         this.publish(topic,message,null,streams);
     }
 
     /**
-     * 向所有消息流发布消息 <br />
+     * 向所有消息流发布消息.
      * @param topic 消息主题
      * @param message 消息内容
      * @param attach 附加信息
+     * @param <T> 消息类型
      */
     public <T> void publish(String topic, T message, Map<String,Object> attach){
         this.publish(topic,message,attach,null);
     }
 
     /**
-     * 向所有消息流发布消息 <br />
+     * 向所有消息流发布消息.
      * @param topic 消息主题
      * @param message 消息内容
+     * @param <T> 消息类型
      */
     public <T> void publish(String topic, T message){
         this.publish(topic,message,null,null);

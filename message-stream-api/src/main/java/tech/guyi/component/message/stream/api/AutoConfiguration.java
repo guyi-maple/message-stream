@@ -17,7 +17,6 @@ import tech.guyi.component.message.stream.api.worker.defaults.DefaultMessageStre
 /**
  * 自动装配
  * @author guyi
- * @date 2021/1/15 22:50
  */
 @Configuration
 public class AutoConfiguration {

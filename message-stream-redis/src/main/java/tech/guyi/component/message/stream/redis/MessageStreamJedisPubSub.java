@@ -7,7 +7,6 @@ import java.util.function.BiConsumer;
 
 /**
  * @author guyi
- * @date 2021/1/19 12:55
  */
 @AllArgsConstructor
 public class MessageStreamJedisPubSub extends JedisPubSub {

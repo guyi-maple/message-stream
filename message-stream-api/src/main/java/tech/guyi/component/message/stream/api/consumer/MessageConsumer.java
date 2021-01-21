@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 消息消费者接口 <br />
+ * 消息消费者接口.
  * @author guyi
- * @date 2021/1/16 12:51
  */
 public interface MessageConsumer<M> {
 
@@ -17,7 +16,7 @@ public interface MessageConsumer<M> {
     List<String> getTopic();
 
     /**
-     * 需要被绑定到的消息流 <br />
+     * 需要被绑定到的消息流.
      * 具体说明见 MessageConsumerEntry.stream
      * @return 消息流名称
      */
@@ -26,7 +25,7 @@ public interface MessageConsumer<M> {
     }
 
     /**
-     * 此消费者的额外参数 <br />
+     * 此消费者的额外参数.
      * 具体说明见 MessageConsumerEntry.attach
      * @return 额外参数
      */

@@ -6,12 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 消息监听注解 <br />
- * 将此注解放置与方法上, 被注解的方法将会被注册为消息监听者 <br />
- * 此注解只有放置在被public修改的方法上才会生效 <br />
- * 此注解只有放置在Spring容器Bean中的方法上才会生效 <br />
+ * 消息监听注解.
+ * 将此注解放置与方法上, 被注解的方法将会被注册为消息监听者.
+ * 此注解只有放置在被public修改的方法上才会生效.
+ * 此注解只有放置在Spring容器Bean中的方法上才会生效.
  * @author guyi
- * @date 2021/1/15 18:23
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -24,7 +23,7 @@ public @interface StreamSubscribe {
     String[] topic();
 
     /**
-     * 指定要注册到的消息流 <br />
+     * 指定要注册到的消息流.
      * 为NULL或空数组表示注册到所有消息流
      * @return 消息流名称
      */

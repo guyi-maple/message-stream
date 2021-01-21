@@ -4,7 +4,6 @@ import lombok.Data;
 
 /**
  * @author guyi
- * @date 2021/1/19 12:52
  */
 @Data
 public class RedisConfiguration {

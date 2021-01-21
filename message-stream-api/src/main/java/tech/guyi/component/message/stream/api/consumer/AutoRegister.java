@@ -71,8 +71,8 @@ abstract class MethodMessageConsumer implements MessageConsumer<Object> {
     }
 
     /**
-     * 获取传入参数类型 <br />
-     * 获取参数上是否修饰了指定的注解, 判断该参数应该注入的内容 <br />
+     * 获取传入参数类型.
+     * 获取参数上是否修饰了指定的注解, 判断该参数应该注入的内容.
      * @param parameter 参数
      * @return 内容名称
      */
@@ -93,8 +93,8 @@ abstract class MethodMessageConsumer implements MessageConsumer<Object> {
     }
 
     /**
-     * 获取内容类型的位置 <br />
-     * 根据getParameterName方法获取应该注入的参数内容名称 <br />
+     * 获取内容类型的位置.
+     * 根据getParameterName方法获取应该注入的参数内容名称.
      * 找不到的内容类型则使用null占位
      * @param parameter 参数组
      * @return 内容类型的位置
@@ -112,7 +112,6 @@ abstract class MethodMessageConsumer implements MessageConsumer<Object> {
 /**
  * 自动注册消息消费者
  * @author guyi
- * @date 2021/1/16 12:55
  */
 public class AutoRegister implements BeanPostProcessor {
 

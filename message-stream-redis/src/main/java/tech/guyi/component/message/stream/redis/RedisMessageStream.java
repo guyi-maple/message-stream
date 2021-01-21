@@ -12,7 +12,6 @@ import java.util.function.Consumer;
 /**
  * 基于Redis实现的消息流
  * @author guyi
- * @date 2021/1/19 12:51
  */
 public class RedisMessageStream implements MessageStream {
 

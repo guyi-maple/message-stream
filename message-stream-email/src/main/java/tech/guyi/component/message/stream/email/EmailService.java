@@ -23,7 +23,6 @@ import java.util.function.Consumer;
 /**
  * 邮件服务
  * @author guyi
- * @date 2021/1/16 18:32
  */
 public class EmailService implements InitializingBean {
 
@@ -52,7 +51,7 @@ public class EmailService implements InitializingBean {
     }
 
     /**
-     * 拉取服务器收件箱中的邮件 <br />
+     * 拉取服务器收件箱中的邮件.
      * 邮件拉取完成后将会被置为已读状态
      */
     @SneakyThrows
