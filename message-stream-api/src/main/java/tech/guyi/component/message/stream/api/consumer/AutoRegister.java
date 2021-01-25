@@ -71,8 +71,8 @@ abstract class MethodMessageConsumer implements MessageConsumer<Object> {
     }
 
     /**
-     * 获取传入参数类型.
-     * 获取参数上是否修饰了指定的注解, 判断该参数应该注入的内容.
+     * <p>获取传入参数类型.</p>
+     * <p>获取参数上是否修饰了指定的注解, 判断该参数应该注入的内容.</p>
      * @param parameter 参数
      * @return 内容名称
      */
@@ -93,9 +93,10 @@ abstract class MethodMessageConsumer implements MessageConsumer<Object> {
     }
 
     /**
-     * 获取内容类型的位置.
-     * 根据getParameterName方法获取应该注入的参数内容名称.
-     * 找不到的内容类型则使用null占位
+     * <p>获取内容类型的位置.</p>
+     * <p>根据getParameterName方法获取应该注入的参数内容名称.</p>
+     * <p>找不到的内容类型则使用null占位</p>
+     * @see MethodMessageConsumer#getParameterName(java.lang.reflect.Parameter) 
      * @param parameter 参数组
      * @return 内容类型的位置
      */

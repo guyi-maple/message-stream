@@ -12,14 +12,17 @@ public class RedisConfiguration {
      * 是否启用
      */
     private boolean enable;
+
     /**
      * Redis服务地址
      */
     private String host = "127.0.0.1";
+
     /**
      * Redis服务端口
      */
     private int port = 6379;
+
     /**
      * Redis数据库
      */

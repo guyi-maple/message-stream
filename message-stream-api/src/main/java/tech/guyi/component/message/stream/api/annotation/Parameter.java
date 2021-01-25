@@ -6,8 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 监听器参数注解.
- * 用于在基于注解注册监听器时的自定义参数传递
+ * <p>监听器参数注解.</p>
+ * <p>用于在基于注解注册监听器时的自定义参数传递</p>
  * @author guyi
  */
 @Target(ElementType.PARAMETER)

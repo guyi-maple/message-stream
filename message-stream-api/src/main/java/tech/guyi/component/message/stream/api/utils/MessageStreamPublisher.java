@@ -19,9 +19,9 @@ public class MessageStreamPublisher {
     private MessageTypeConverters converters;
 
     /**
-     * 向消息流发布消息.
-     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.
-     * 如果消息实体中stream指定的消息流不存在, 则会丢弃该消息
+     * <p>向消息流发布消息.</p>
+     * <p>如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.</p>
+     * <p>如果消息实体中stream指定的消息流不存在, 则会丢弃该消息.</p>
      * @param topic 消息主题
      * @param bytes 消息内容
      * @param attach 附加信息
@@ -32,9 +32,9 @@ public class MessageStreamPublisher {
     }
 
     /**
-     * 向消息流发布消息.
-     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.
-     * 如果消息实体中stream指定的消息流不存在, 则会丢弃该消息
+     * <p>向消息流发布消息.</p>
+     * <p>如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.</p>
+     * <p>如果消息实体中stream指定的消息流不存在, 则会丢弃该消息.</p>
      * @param topic 消息主题
      * @param bytes 消息内容
      * @param streams 要发布到的消息流, 为空表示发布到全部
@@ -64,9 +64,9 @@ public class MessageStreamPublisher {
 
 
     /**
-     * 向消息流发布消息.
-     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.
-     * 如果消息实体中stream指定的消息流不存在, 则会丢弃该消息
+     * <p>向消息流发布消息.</p>
+     * <p>如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.</p>
+     * <p>如果消息实体中stream指定的消息流不存在, 则会丢弃该消息.</p>
      * @param topic 消息主题
      * @param message 消息内容
      * @param attach 附加信息
@@ -78,9 +78,9 @@ public class MessageStreamPublisher {
     }
 
     /**
-     * 向消息流发布消息.
-     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.
-     * 如果消息实体中stream指定的消息流不存在, 则会丢弃该消息
+     * <p>向消息流发布消息.</p>
+     * <p>如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.</p>
+     * <p>如果消息实体中stream指定的消息流不存在, 则会丢弃该消息</p>
      * @param topic 消息主题
      * @param message 消息内容
      * @param streams 要发布到的消息流, 为空表示发布到全部

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.ObjectUtils;
+import tech.guyi.component.message.stream.api.consumer.MessageConsumer;
 import tech.guyi.component.message.stream.api.consumer.MessageConsumers;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHook;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHookRunner;
@@ -66,10 +67,11 @@ public class MessageStreams implements InitializingBean {
     }
 
     /**
-     * 注册消息主题.
-     * 实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制.
-     * 此方式作用仅为通知消息流.
-     * 此方法应只被消费者仓库调用.
+     * <p>注册消息主题.</p>
+     * <p>实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制.</p>
+     * <p>此方式作用仅为通知消息流.</p>
+     * <p>此方法应只被消费者仓库调用.</p>
+     * @see MessageConsumers#register(MessageConsumer)
      * @param topic 消息主题
      * @param streams 要注册到的消息流
      */
@@ -85,10 +87,11 @@ public class MessageStreams implements InitializingBean {
     }
 
     /**
-     * 取消消息主题的注册
-     * 实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制.
-     * 此方式作用仅为通知消息流.
-     * 此方法应只被消费者仓库调用.
+     * <p>取消消息主题的注册.</p>
+     * <p>实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制.</p>
+     * <p>此方式作用仅为通知消息流.</p>
+     * <p>此方法应只被消费者仓库调用.</p>
+     * @see MessageConsumers#unregister(String)
      * @param topic 消息主题
      * @param streams 要取消的消息流
      */
@@ -125,9 +128,9 @@ public class MessageStreams implements InitializingBean {
     }
 
     /**
-     * 向消息流发布消息.
-     * 如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.
-     * 如果消息实体中stream指定的消息流不存在, 则会丢弃该消息
+     * <p>向消息流发布消息.</p>
+     * <p>如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.</p>
+     * <p>如果消息实体中stream指定的消息流不存在, 则会丢弃该消息</p>
      * @param topic 消息主题
      * @param bytes 消息内容
      * @param attach 附加信息

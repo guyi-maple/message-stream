@@ -17,14 +17,17 @@ public class WebsocketConnection extends WebSocketClient {
      * 消息到达回调
      */
     private final Consumer<String> onReceive;
+
     /**
      * 连接建立回调
      */
     private final Consumer<ServerHandshake> onOpen;
+
     /**
      * 连接关闭回调
      */
     private final Runnable onClose;
+
     /**
      * 连接异常回调
      */

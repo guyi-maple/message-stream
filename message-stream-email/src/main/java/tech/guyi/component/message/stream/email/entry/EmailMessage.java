@@ -21,10 +21,12 @@ public class EmailMessage {
      * 邮件主题
      */
     private String title;
+
     /**
      * 邮件内容
      */
     private String content;
+
     /**
      * 邮件发送者
      */

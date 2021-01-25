@@ -8,15 +8,15 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * 消息流接口.
- * 实现此接口,获取不同来源的消息
+ * <p>消息流接口.</p>
+ * <p>实现此接口,获取不同来源的消息</p>
  * @author guyi
  */
 public interface MessageStream {
 
     /**
-     * 消息流名称.
-     * 用来标识不同的消息流, 不可重复或返回NULL
+     * <p>消息流名称.</p>
+     * <p>用来标识不同的消息流, 不可重复或返回NULL</p>
      * @return 消息流名称
      */
     @NonNull

@@ -3,17 +3,17 @@ package tech.guyi.component.message.stream.websocket.topic;
 import lombok.NonNull;
 
 /**
- * Topic处理器.
- * 从收到的消息中提取Topic.
- * 给发送的消息添加topic.
+ * <p>Topic处理器.</p>
+ * <p>从收到的消息中提取Topic.</p>
+ * <p>给发送的消息添加topic.</p>
  * @author guyi
  */
 public interface TopicHandler {
 
     /**
-     * 返回处理器名称.
-     * 当返回的名称与配置匹配时, 激活此处理器.
-     * 返回的名称不能为空.
+     * <p>返回处理器名称.</p>
+     * <p>当返回的名称与配置匹配时, 激活此处理器.</p>
+     * <p>返回的名称不能为空.</p>
      * @return 处理器名称
      */
     @NonNull

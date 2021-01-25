@@ -16,8 +16,8 @@ public interface MessageConsumer<M> {
     List<String> getTopic();
 
     /**
-     * 需要被绑定到的消息流.
-     * 具体说明见 MessageConsumerEntry.stream
+     * <p>需要被绑定到的消息流名称.</p>
+     * <p>当返回NULL或空集合时, 表示注册到所有存在的消息流中</p>
      * @return 消息流名称
      */
     default List<String> getStream(){
@@ -25,8 +25,8 @@ public interface MessageConsumer<M> {
     }
 
     /**
-     * 此消费者的额外参数.
-     * 具体说明见 MessageConsumerEntry.attach
+     * <p>此消费者的额外参数.</p>
+     * <p>可能存在消息流实现需要消费者额外提供参数的情况, 此时可以使用此方法传递给消息流实现者</p>
      * @return 额外参数
      */
     default Map<String,Object> getAttach(){

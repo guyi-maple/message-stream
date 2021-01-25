@@ -30,8 +30,8 @@ public class KafkaConfiguration {
     private String bootstrapServers;
 
     /**
-     * 获取服务器地址.
-     * 如果子配置不存在该配置项, 则使用基础配置中的值
+     * <p>获取服务器地址.</p>
+     * <p>如果子配置不存在该配置项, 则使用基础配置中的值.</p>
      * @param type 类型
      * @return 服务器地址
      */

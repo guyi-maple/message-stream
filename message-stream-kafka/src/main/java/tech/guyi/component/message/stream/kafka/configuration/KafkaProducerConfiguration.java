@@ -17,8 +17,7 @@ public class KafkaProducerConfiguration implements ConfigurationInterface {
     private String bootstrapServers;
 
     /**
-     * topic.
-     * 默认值 message.stream
+     * topic
      */
     private String topic = "message.stream";
 
@@ -28,8 +27,8 @@ public class KafkaProducerConfiguration implements ConfigurationInterface {
     private String acks = "all";
 
     /**
-     * 重试次数.
-     * 默认不重试
+     * <p>重试次数.</p>
+     * <p>为零表示不重试.</p>
      */
     private int retries = 0;
 

@@ -1,7 +1,5 @@
 package tech.guyi.component.message.stream.kafka.configuration;
 
-import java.util.List;
-
 /**
  * @author guyi
  */

@@ -13,12 +13,15 @@ public class WebSocketConfiguration {
      * 是否启用
      */
     private boolean enable = true;
+
     /**
-     * Websocket连接地址.
-     * 允许使用表达式 {name}.
-     * 使用 tech.guyi.component.message.stream.websocket.executor.WebSocketServerExecutor 可对表达式进行替换
+     * <p>Websocket连接地址.</p>
+     * <p>允许使用表达式 {name}.</p>
+     * <p>使用 WebSocketServerExecutor 可对表达式进行替换.</p>
+     * @see tech.guyi.component.message.stream.websocket.executor.WebSocketServerExecutor
      */
     private String server;
+
     /**
      * 要启用的Topic处理器名称.
      */

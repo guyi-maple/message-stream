@@ -50,10 +50,8 @@ public class EmailService implements InitializingBean {
         }
     }
 
-    /**
-     * 拉取服务器收件箱中的邮件.
-     * 邮件拉取完成后将会被置为已读状态
-     */
+    // 拉取服务器收件箱中的邮件.
+    // 件拉取完成后将会被置为已读状态.
     @SneakyThrows
     private void pullEmail(){
         try{
@@ -96,10 +94,7 @@ public class EmailService implements InitializingBean {
         return String.format(key,protocol);
     }
 
-    /**
-     * 获取邮件拉取Session
-     * @return session
-     */
+    // 获取邮件拉取Session
     private Session getSession(){
         Properties props = new Properties();
         props.setProperty("mail.store.protocol", pull.getProtocol());
@@ -116,22 +111,12 @@ public class EmailService implements InitializingBean {
         return Session.getDefaultInstance(props);
     }
 
-    /**
-     * 获取消息存储
-     * @param session session
-     * @return 消息存储
-     * @throws NoSuchProviderException 当找不到配置的协议时抛出
-     */
+    // 获取消息存储
     private Store getStore(Session session) throws NoSuchProviderException {
         return session.getStore(pull.getProtocol());
     }
 
-    /**
-     * 获取收件箱
-     * @param store 消息存储
-     * @return 收件箱
-     * @throws MessagingException 消息异常
-     */
+    // 获取收件箱
     private Folder getFolder(Store store) throws MessagingException {
         store.connect(email.getUsername(),email.getPassword());
         Folder folder = store.getFolder("INBOX");
