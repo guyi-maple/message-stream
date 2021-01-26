@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>tech.guyi.component</groupId>
+    <artifactId>message-stream-dependencies</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+
+        <api.version>1.0</api.version>
+        <email.version>1.0</email.version>
+        <kafka.version>1.0</kafka.version>
+        <rabbitmq.version>1.0</rabbitmq.version>
+        <redis.version>1.0</redis.version>
+        <websocket.version>1.0</websocket.version>
+    </properties>
+
+    <dependencyManagement>
+
+        <dependencies>
+
+            <dependency>
+                <groupId>tech.guyi.component</groupId>
+                <artifactId>message-stream-api</artifactId>
+                <version>${api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>tech.guyi.component</groupId>
+                <artifactId>message-stream-email</artifactId>
+                <version>${email.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>tech.guyi.component</groupId>
+                <artifactId>message-stream-kafka</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>tech.guyi.component</groupId>
+                <artifactId>message-stream-rabbitmq</artifactId>
+                <version>${rabbitmq.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>tech.guyi.component</groupId>
+                <artifactId>message-stream-redis</artifactId>
+                <version>${redis.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>tech.guyi.component</groupId>
+                <artifactId>message-stream-websocket</artifactId>
+                <version>${websocket.version}</version>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
+
+</project>

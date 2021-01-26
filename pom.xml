@@ -15,6 +15,7 @@
         <module>message-stream-websocket</module>
         <module>message-stream-redis</module>
         <module>message-stream-kafka</module>
+        <module>message-stream-dependencies</module>
     </modules>
 
     <name>message-stream</name>
