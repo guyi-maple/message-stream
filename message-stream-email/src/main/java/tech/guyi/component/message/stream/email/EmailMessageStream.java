@@ -36,16 +36,6 @@ public class EmailMessageStream implements MessageStream {
     }
 
     @Override
-    public void register(String topic) {
-
-    }
-
-    @Override
-    public void unregister(String topic) {
-
-    }
-
-    @Override
     public void open(Consumer<Message> receiver) {
         this.service.onEmail(email -> {
             String topic = this.extractor.getTopic(email.getTitle());

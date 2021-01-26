@@ -4,7 +4,6 @@ import lombok.NonNull;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -28,16 +27,24 @@ public interface MessageStream {
     void close();
 
     /**
-     * 注册消息主题
+     * <p>注册消息主题</p>
+     * <p>消息流实现支持Topic匹配时, 可重写此方法</p>
      * @param topic 消息主题
+     * @param attach 消息消费者传递的额外参数
      */
-    void register(String topic);
+    default void register(String topic, Map<String,Object> attach){
+
+    }
 
     /**
-     * 取消消息主题的注册
+     * <p>取消消息主题的注册</p>
+     * <p>消息流实现支持Topic匹配时, 可重写此方法</p>
      * @param topic 消息主题
+     * @param attach 消息消费者传递的额外参数
      */
-    void unregister(String topic);
+    default void unregister(String topic, Map<String,Object> attach){
+
+    }
 
     /**
      * 打开消息流

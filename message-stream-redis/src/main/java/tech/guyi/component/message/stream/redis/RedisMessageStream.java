@@ -7,6 +7,7 @@ import tech.guyi.component.message.stream.api.stream.entry.Message;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -34,12 +35,12 @@ public class RedisMessageStream implements MessageStream {
     }
 
     @Override
-    public void register(String topic) {
+    public void register(String topic, Map<String, Object> attach) {
         this.pubSub.subscribe(topic);
     }
 
     @Override
-    public void unregister(String topic) {
+    public void unregister(String topic, Map<String, Object> attach) {
         this.pubSub.unsubscribe(topic);
     }
 

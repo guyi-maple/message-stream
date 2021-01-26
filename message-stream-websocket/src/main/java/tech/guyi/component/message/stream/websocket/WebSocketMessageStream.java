@@ -104,16 +104,6 @@ public class WebSocketMessageStream implements MessageStream {
     }
 
     @Override
-    public void register(String topic) {
-
-    }
-
-    @Override
-    public void unregister(String topic) {
-
-    }
-
-    @Override
     @SneakyThrows
     public void open(Consumer<Message> receiver) {
         this.connect(receiver);

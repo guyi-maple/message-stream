@@ -7,6 +7,7 @@ import tech.guyi.component.message.stream.api.stream.MessageStream;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
 
 import javax.annotation.Resource;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -42,13 +43,16 @@ public class RabbitmqMessageStream implements MessageStream {
         this.connection.close();
     }
 
+
     /**
      * 当有新的消息主题被注册时, 将消息主题转为RouterKey, 与队列及路由器绑定
+     * @see MessageStream#register(String, Map)
      * @param topic 消息主题
+     * @param attach 消息消费者传递的额外参数
      */
     @Override
     @SneakyThrows
-    public void register(String topic) {
+    public void register(String topic, Map<String, Object> attach) {
         channel.queueBind(configuration.getQueue(), configuration.getExchange(), this.replaceTopic(topic));
         channel.basicConsume(configuration.getQueue(), true,new DefaultConsumer(channel){
             @Override
@@ -60,11 +64,13 @@ public class RabbitmqMessageStream implements MessageStream {
 
     /**
      * 当有消息主题被取消注册时, 将消息主题转为RouterKey, 与队列及路由器解除绑定
+     * @see MessageStream#unregister(String, Map)
      * @param topic 消息主题
+     * @param attach 消息消费者传递的额外参数
      */
     @Override
     @SneakyThrows
-    public void unregister(String topic) {
+    public void unregister(String topic, Map<String, Object> attach) {
         channel.queueUnbind(configuration.getQueue(),configuration.getExchange(), this.replaceTopic(topic));
     }
 

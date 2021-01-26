@@ -74,16 +74,50 @@ public class MessageStreams implements InitializingBean {
      * @see MessageConsumers#register(MessageConsumer)
      * @param topic 消息主题
      * @param streams 要注册到的消息流
+     * @param attach 消息消费者传递的额外参数
      */
-    public void register(String topic, List<String> streams){
+    public void register(String topic, List<String> streams, Map<String,Object> attach){
         Collection<MessageStream> ss;
         if (streams == null || streams.isEmpty()){
             ss = this.getStreams();
         }else{
             ss = streams.stream().map(this.streams::get).collect(Collectors.toList());
         }
-        ss.forEach(stream -> stream.register(topic));
+        ss.forEach(stream -> stream.register(topic, attach));
         log.info("Subscribe Topic {}", topic);
+    }
+
+    /**
+     * <p>注册消息主题.</p>
+     * <p>实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制.</p>
+     * <p>此方式作用仅为通知消息流.</p>
+     * <p>此方法应只被消费者仓库调用.</p>
+     * @see MessageConsumers#register(MessageConsumer)
+     * @param topic 消息主题
+     * @param streams 要注册到的消息流
+     */
+    public void register(String topic, List<String> streams){
+        this.register(topic,streams,Collections.emptyMap());
+    }
+
+    /**
+     * <p>取消消息主题的注册.</p>
+     * <p>实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制.</p>
+     * <p>此方式作用仅为通知消息流.</p>
+     * <p>此方法应只被消费者仓库调用.</p>
+     * @see MessageConsumers#unregister(String)
+     * @param topic 消息主题
+     * @param streams 要取消的消息流
+     * @param attach 消息消费者传递的额外参数
+     */
+    public void unregister(String topic, List<String> streams, Map<String,Object> attach){
+        Optional.ofNullable(streams)
+                .filter(s -> !s.isEmpty())
+                .map(this.streams::get)
+                .map(s -> (Collection<MessageStream>) s)
+                .orElse(this.getStreams())
+                .forEach(stream -> stream.unregister(topic, attach));
+        log.info("UnSubscribe Topic {}", topic);
     }
 
     /**
@@ -96,13 +130,7 @@ public class MessageStreams implements InitializingBean {
      * @param streams 要取消的消息流
      */
     public void unregister(String topic, List<String> streams){
-        Optional.ofNullable(streams)
-                .filter(s -> !s.isEmpty())
-                .map(this.streams::get)
-                .map(s -> (Collection<MessageStream>) s)
-                .orElse(this.getStreams())
-                .forEach(stream -> stream.unregister(topic));
-        log.info("UnSubscribe Topic {}", topic);
+        this.unregister(topic,streams, Collections.emptyMap());
     }
 
     /**

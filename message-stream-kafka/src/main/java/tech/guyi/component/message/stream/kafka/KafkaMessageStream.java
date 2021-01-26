@@ -99,14 +99,6 @@ public class KafkaMessageStream implements MessageStream {
     }
 
     @Override
-    public void register(String topic) {
-    }
-
-    @Override
-    public void unregister(String topic) {
-    }
-
-    @Override
     public void open(Consumer<Message> receiver) {
         // 打开生产者连接
         this.openProducer();

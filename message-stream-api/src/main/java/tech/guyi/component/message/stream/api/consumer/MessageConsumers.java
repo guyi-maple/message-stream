@@ -77,7 +77,7 @@ public class MessageConsumers {
     public void register(MessageConsumer consumer){
         for (Object topic : consumer.getTopic()) {
             this.consumers.put(topic.toString(), consumer);
-            this.messageStreams.register(topic.toString(), consumer.getStream());
+            this.messageStreams.register(topic.toString(), consumer.getStream(), consumer.getAttach());
         }
 
         // 回调消费者注册钩子
@@ -93,7 +93,7 @@ public class MessageConsumers {
                 .filter(topic::equals)
                 .forEach(key -> {
                     MessageConsumer consumer = this.consumers.remove(key);
-                    this.messageStreams.unregister(key, consumer.getStream());
+                    this.messageStreams.unregister(key, consumer.getStream(), consumer.getAttach());
                 });
 
         // 回调消费者取消注册钩子
