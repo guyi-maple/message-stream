@@ -22,11 +22,11 @@ public class RocketmqAliyunConfiguration {
     /**
      * 阿里云AccessKey
      */
-    private String AccessKey;
+    private String accessKey;
 
     /**
      * 阿里云SecretKey
      */
-    private String SecretKey;
+    private String secretKey;
 
 }

@@ -15,17 +15,17 @@ import tech.guyi.component.message.stream.rocketmq.creatoe.DefaultRocketmqCreato
  * @author guyi
  */
 @Configuration
-@ConditionalOnProperty(value = "tech.guyi.message.stream.rocketmq.enable", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "message.stream.rocketmq.enable", havingValue = "true", matchIfMissing = true)
 public class RocketmqAutoConfiguration {
 
     @Bean
-    @ConfigurationProperties(prefix = "tech.guyi.message.stream.rocketmq")
+    @ConfigurationProperties(prefix = "message.stream.rocketmq")
     public RocketmqConfiguration rocketmqConfiguration(){
         return new RocketmqConfiguration();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "tech.guyi.message.stream.rocketmq.aliyun")
+    @ConfigurationProperties(prefix = "message.stream.rocketmq.aliyun")
     public RocketmqAliyunConfiguration rocketmqAliyunConfiguration(){
         return new RocketmqAliyunConfiguration();
     }
