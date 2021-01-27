@@ -16,6 +16,7 @@
         <module>message-stream-redis</module>
         <module>message-stream-kafka</module>
         <module>message-stream-dependencies</module>
+        <module>message-stream-rocketmq</module>
     </modules>
 
     <name>message-stream</name>
