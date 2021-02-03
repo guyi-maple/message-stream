@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.ObjectUtils;
-import tech.guyi.component.message.stream.api.consumer.MessageConsumer;
+import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.consumer.MessageConsumers;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHook;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHookRunner;
@@ -13,6 +13,7 @@ import tech.guyi.component.message.stream.api.stream.entry.Message;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -51,86 +52,36 @@ public class MessageStreams implements InitializingBean {
     }
 
     /**
+     * 根据正则表达式匹配消息流名称查找消息流.
+     * @param pattern 正则表达式
+     * @return 消息流集合
+     */
+    public List<MessageStream> pattern(String pattern){
+        return this.streams.keySet().stream()
+                .filter(name -> Pattern.matches(pattern,name))
+                .map(this.streams::get)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * <p>通过消息流名称集合查找消息流.</p>
+     * <p>当传入NULL或空集合时, 返回所有消息流.</p>
+     * @param names 消息流名称集合
+     * @return 消息流集合
+     */
+    public List<MessageStream> filter(List<String> names){
+        return Optional.ofNullable(names)
+                .filter(ns -> !names.isEmpty())
+                .map(ns -> ns.stream().map(this.streams::get).collect(Collectors.toList()))
+                .orElse(this.all());
+    }
+
+    /**
      * 获取所有消息流
      * @return 消息流集合
      */
-    public Collection<MessageStream> getStreams(){
-        return this.streams.values();
-    }
-
-    /**
-     * 向所有消息流注册消息主题
-     * @param topic 消息主题
-     */
-    public void register(String topic){
-        this.register(topic, null);
-    }
-
-    /**
-     * <p>注册消息主题.</p>
-     * <p>实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制.</p>
-     * <p>此方式作用仅为通知消息流.</p>
-     * <p>此方法应只被消费者仓库调用.</p>
-     * @see MessageConsumers#register(MessageConsumer)
-     * @param topic 消息主题
-     * @param streams 要注册到的消息流
-     * @param attach 消息消费者传递的额外参数
-     */
-    public void register(String topic, List<String> streams, Map<String,Object> attach){
-        Collection<MessageStream> ss;
-        if (streams == null || streams.isEmpty()){
-            ss = this.getStreams();
-        }else{
-            ss = streams.stream().map(this.streams::get).collect(Collectors.toList());
-        }
-        ss.forEach(stream -> stream.register(topic, attach));
-        log.info("Subscribe Topic {}", topic);
-    }
-
-    /**
-     * <p>注册消息主题.</p>
-     * <p>实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制.</p>
-     * <p>此方式作用仅为通知消息流.</p>
-     * <p>此方法应只被消费者仓库调用.</p>
-     * @see MessageConsumers#register(MessageConsumer)
-     * @param topic 消息主题
-     * @param streams 要注册到的消息流
-     */
-    public void register(String topic, List<String> streams){
-        this.register(topic,streams,Collections.emptyMap());
-    }
-
-    /**
-     * <p>取消消息主题的注册.</p>
-     * <p>实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制.</p>
-     * <p>此方式作用仅为通知消息流.</p>
-     * <p>此方法应只被消费者仓库调用.</p>
-     * @see MessageConsumers#unregister(String)
-     * @param topic 消息主题
-     * @param streams 要取消的消息流
-     * @param attach 消息消费者传递的额外参数
-     */
-    public void unregister(String topic, List<String> streams, Map<String,Object> attach){
-        Optional.ofNullable(streams)
-                .filter(s -> !s.isEmpty())
-                .map(this.streams::get)
-                .map(s -> (Collection<MessageStream>) s)
-                .orElse(this.getStreams())
-                .forEach(stream -> stream.unregister(topic, attach));
-        log.info("UnSubscribe Topic {}", topic);
-    }
-
-    /**
-     * <p>取消消息主题的注册.</p>
-     * <p>实际消息主题的分发及注册由消费者仓库 (MessageConsumers) 控制.</p>
-     * <p>此方式作用仅为通知消息流.</p>
-     * <p>此方法应只被消费者仓库调用.</p>
-     * @see MessageConsumers#unregister(String)
-     * @param topic 消息主题
-     * @param streams 要取消的消息流
-     */
-    public void unregister(String topic, List<String> streams){
-        this.unregister(topic,streams, Collections.emptyMap());
+    public List<MessageStream> all(){
+        return new LinkedList<>(this.streams.values());
     }
 
     /**
@@ -151,7 +102,7 @@ public class MessageStreams implements InitializingBean {
                 .filter(ns -> !ns.isEmpty())
                 .map(ns -> ns.stream().map(this.streams::get).collect(Collectors.toList()))
                 .map(stream -> (Collection<MessageStream>) stream)
-                .orElse(this.getStreams())
+                .orElse(this.all())
                 .forEach(MessageStream::close);
     }
 
@@ -164,7 +115,7 @@ public class MessageStreams implements InitializingBean {
      * @param attach 附加信息
      * @param streams 要发布到的消息流, 为空表示发布到全部
      */
-    public void publish(String topic, byte[] bytes, Map<String,Object> attach, List<String> streams){
+    public void publish(String topic, byte[] bytes, Map<Class<? extends AttachKey>,Object> attach, List<String> streams){
         Message message = new Message(topic,bytes,Optional.ofNullable(attach).orElse(Collections.emptyMap()));
 
         // 如果streams不为空获取到需要发布的消息流, 并发布消息

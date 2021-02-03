@@ -1,4 +1,4 @@
-package tech.guyi.component.message.stream.api.annotation;
+package tech.guyi.component.message.stream.api.annotation.listener;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,13 +14,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface StreamSubscribe {
-
-    /**
-     * 要监听的消息主题
-     * @return 消息主题
-     */
-    String[] topic();
+public @interface Subscribe {
 
     /**
      * <p>指定要注册到的消息流.</p>
@@ -28,11 +22,5 @@ public @interface StreamSubscribe {
      * @return 消息流名称
      */
     String[] stream() default {};
-
-    /**
-     * 自定义参数
-     * @return 自定义参数
-     */
-    Parameter[] params() default {};
 
 }

@@ -8,6 +8,8 @@ import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
+import tech.guyi.component.message.stream.api.attach.AttachKey;
+import tech.guyi.component.message.stream.api.attach.StreamTopicAttachKey;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
 import tech.guyi.component.message.stream.rocketmq.configuration.RocketmqAliyunConfiguration;
@@ -69,11 +71,11 @@ public class RocketmqMessageStream implements MessageStream, InitializingBean {
 
     @Override
     @SneakyThrows
-    public void register(String topic, Map<String, Object> attach) {
+    public void register(String topic, Map<Class<? extends AttachKey>, Object> attach) {
         // 获取Rocketmq的Topic
         // 此Topic具体说明参见 RocketmqConfiguration.topic 的说明
         String rocketTopic = Optional.ofNullable(attach)
-                .map(a -> a.get("topic"))
+                .map(a -> a.get(StreamTopicAttachKey.class))
                 .map(Object::toString)
                 .orElse(configuration.getTopic());
 
@@ -114,7 +116,7 @@ public class RocketmqMessageStream implements MessageStream, InitializingBean {
         org.apache.rocketmq.common.message.Message mess = new org.apache.rocketmq.common.message.Message();
         mess.setTopic(
                 Optional.ofNullable(message.getAttach())
-                        .map(a -> a.get("topic"))
+                        .map(a -> a.get(StreamTopicAttachKey.class))
                         .map(Object::toString)
                         .orElse(configuration.getTopic())
         );

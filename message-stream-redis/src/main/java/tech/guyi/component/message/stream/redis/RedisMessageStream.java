@@ -2,6 +2,7 @@ package tech.guyi.component.message.stream.redis;
 
 import lombok.NonNull;
 import redis.clients.jedis.Jedis;
+import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
 
@@ -35,12 +36,12 @@ public class RedisMessageStream implements MessageStream {
     }
 
     @Override
-    public void register(String topic, Map<String, Object> attach) {
+    public void register(String topic, Map<Class<? extends AttachKey>, Object> attach) {
         this.pubSub.subscribe(topic);
     }
 
     @Override
-    public void unregister(String topic, Map<String, Object> attach) {
+    public void unregister(String topic, Map<Class<? extends AttachKey>, Object> attach) {
         this.pubSub.unsubscribe(topic);
     }
 

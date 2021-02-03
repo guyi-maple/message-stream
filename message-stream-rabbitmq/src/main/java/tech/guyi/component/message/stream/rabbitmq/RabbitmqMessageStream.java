@@ -3,6 +3,7 @@ package tech.guyi.component.message.stream.rabbitmq;
 import com.rabbitmq.client.*;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
 
@@ -52,7 +53,7 @@ public class RabbitmqMessageStream implements MessageStream {
      */
     @Override
     @SneakyThrows
-    public void register(String topic, Map<String, Object> attach) {
+    public void register(String topic, Map<Class<? extends AttachKey>, Object> attach) {
         channel.queueBind(configuration.getQueue(), configuration.getExchange(), this.replaceTopic(topic));
         channel.basicConsume(configuration.getQueue(), true,new DefaultConsumer(channel){
             @Override
@@ -70,7 +71,7 @@ public class RabbitmqMessageStream implements MessageStream {
      */
     @Override
     @SneakyThrows
-    public void unregister(String topic, Map<String, Object> attach) {
+    public void unregister(String topic, Map<Class<? extends AttachKey>, Object> attach) {
         channel.queueUnbind(configuration.getQueue(),configuration.getExchange(), this.replaceTopic(topic));
     }
 
