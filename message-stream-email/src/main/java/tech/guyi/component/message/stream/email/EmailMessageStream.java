@@ -4,6 +4,7 @@ import lombok.NonNull;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
 import tech.guyi.component.message.stream.email.extract.TitleExtractor;
+import tech.guyi.component.message.stream.email.key.AddressAttachKey;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
@@ -42,7 +43,7 @@ public class EmailMessageStream implements MessageStream {
             receiver.accept(new Message(
                     topic,
                     email.getContent().getBytes(StandardCharsets.UTF_8),
-                    Collections.singletonMap("address",email.getSource())
+                    Collections.singletonMap(AddressAttachKey.class,email.getSource())
             ));
         });
     }
@@ -51,7 +52,7 @@ public class EmailMessageStream implements MessageStream {
     public void publish(Message message) {
         // 如果附加信息中不存在收件人地址, 则丢弃该消息
         Optional.ofNullable(message.getAttach())
-                .map(attach -> attach.get("address"))
+                .map(attach -> attach.get(AddressAttachKey.class))
                 .map(Object::toString)
                 .ifPresent(address -> {
                     String title = this.extractor.getTitle(message.getTopic());

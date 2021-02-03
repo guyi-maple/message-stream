@@ -3,7 +3,7 @@ package tech.guyi.component.message.stream.api;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import tech.guyi.component.message.stream.api.consumer.AutoRegister;
+import tech.guyi.component.message.stream.api.consumer.ConsumerAutoRegister;
 import tech.guyi.component.message.stream.api.consumer.MessageConsumers;
 import tech.guyi.component.message.stream.api.converter.MessageTypeConverters;
 import tech.guyi.component.message.stream.api.converter.defaults.StringMessageTypeConverter;
@@ -27,8 +27,8 @@ public class AutoConfiguration {
     }
 
     @Bean
-    public AutoRegister autoRegister(){
-        return new AutoRegister();
+    public ConsumerAutoRegister autoRegister(){
+        return new ConsumerAutoRegister();
     }
 
     @Bean

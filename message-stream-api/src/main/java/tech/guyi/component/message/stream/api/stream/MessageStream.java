@@ -1,6 +1,7 @@
 package tech.guyi.component.message.stream.api.stream;
 
 import lombok.NonNull;
+import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
 
 import java.util.Map;
@@ -32,7 +33,7 @@ public interface MessageStream {
      * @param topic 消息主题
      * @param attach 消息消费者传递的额外参数
      */
-    default void register(String topic, Map<String,Object> attach){
+    default void register(String topic, Map<Class<? extends AttachKey>,Object> attach){
 
     }
 
@@ -42,7 +43,7 @@ public interface MessageStream {
      * @param topic 消息主题
      * @param attach 消息消费者传递的额外参数
      */
-    default void unregister(String topic, Map<String,Object> attach){
+    default void unregister(String topic, Map<Class<? extends AttachKey>,Object> attach){
 
     }
 
