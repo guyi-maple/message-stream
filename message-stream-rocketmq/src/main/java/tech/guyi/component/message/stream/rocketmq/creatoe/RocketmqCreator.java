@@ -14,11 +14,11 @@ public interface RocketmqCreator {
      * 创建Rocketmq消费者
      * @return Rocketmq消费者
      */
-    DefaultMQPushConsumer createConsumer();
+    DefaultMQPushConsumer createConsumer(String groupId);
 
     /**
      * 创建Rocketmq生产者
      * @return Rocketmq生产者
      */
-    DefaultMQProducer createProducer();
+    DefaultMQProducer createProducer(String groupId);
 }

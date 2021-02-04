@@ -9,6 +9,7 @@ import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import tech.guyi.component.message.stream.api.attach.AttachKey;
+import tech.guyi.component.message.stream.api.attach.GroupIdAttachKey;
 import tech.guyi.component.message.stream.api.attach.StreamTopicAttachKey;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
@@ -80,7 +81,9 @@ public class RocketmqMessageStream implements MessageStream, InitializingBean {
                 .orElse(configuration.getTopic());
 
         if (!this.consumers.containsKey(rocketTopic)){
-            DefaultMQPushConsumer consumer = this.creator.createConsumer();
+            DefaultMQPushConsumer consumer = this.creator.createConsumer(
+                    Optional.ofNullable(attach).map(a -> a.get(GroupIdAttachKey.class)).map(Object::toString).orElse(configuration.getGroupId())
+            );
             consumer.setNamesrvAddr(configuration.getNameServer());
 
             consumer.subscribe(rocketTopic, "*");
@@ -105,7 +108,7 @@ public class RocketmqMessageStream implements MessageStream, InitializingBean {
         this.receiver = receiver;
 
         // 创建并启动生产者
-        this.producer = this.creator.createProducer();
+        this.producer = this.creator.createProducer(configuration.getGroupId());
         this.producer.setNamesrvAddr(configuration.getNameServer());
         this.producer.start();
     }

@@ -56,10 +56,10 @@ public class KafkaMessageStream implements MessageStream {
     }
 
     // 创建消费者连接
-    private void openConsumer(){
+    private void openConsumer(String groupId){
         Properties props = new Properties();
         props.put("bootstrap.servers", configuration.getBootstrapServers(ConfigurationType.CONSUMER));
-        props.put("group.id", configuration.getConsumer().getGroupId());
+        props.put("group.id", groupId);
         props.put("enable.auto.commit", configuration.getConsumer().isAutoCommit());
         props.put("auto.commit.interval.ms",configuration.getConsumer().getInterval());
         props.put("session.timeout.ms", configuration.getConsumer().getTimeout());
@@ -106,7 +106,7 @@ public class KafkaMessageStream implements MessageStream {
         // 如果启用了消息者
         if (this.configuration.getConsumer().isEnable()){
             // 打开消费者连接
-            this.openConsumer();
+            this.openConsumer(configuration.getConsumer().getGroupId());
         }
 
         // 缓存消息接收者

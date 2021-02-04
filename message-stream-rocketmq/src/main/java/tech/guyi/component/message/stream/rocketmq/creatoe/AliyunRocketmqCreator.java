@@ -23,7 +23,7 @@ public class AliyunRocketmqCreator implements RocketmqCreator {
     private RocketmqAliyunConfiguration aliyunConfiguration;
 
     @Override
-    public DefaultMQPushConsumer createConsumer() {
+    public DefaultMQPushConsumer createConsumer(String groupId) {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(
                 configuration.getGroupId(),
                 // 添加阿里云的认证信息
@@ -38,7 +38,7 @@ public class AliyunRocketmqCreator implements RocketmqCreator {
     }
 
     @Override
-    public DefaultMQProducer createProducer() {
+    public DefaultMQProducer createProducer(String groupId) {
         return new DefaultMQProducer(
                 configuration.getGroupId(),
                 // 添加阿里云的认证信息

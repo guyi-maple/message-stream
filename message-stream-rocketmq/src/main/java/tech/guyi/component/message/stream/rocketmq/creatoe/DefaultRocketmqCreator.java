@@ -16,12 +16,12 @@ public class DefaultRocketmqCreator implements RocketmqCreator {
     private RocketmqConfiguration configuration;
 
     @Override
-    public DefaultMQPushConsumer createConsumer() {
+    public DefaultMQPushConsumer createConsumer(String groupId) {
         return new DefaultMQPushConsumer(configuration.getGroupId());
     }
 
     @Override
-    public DefaultMQProducer createProducer() {
+    public DefaultMQProducer createProducer(String groupId) {
         return new DefaultMQProducer(configuration.getGroupId());
     }
 
