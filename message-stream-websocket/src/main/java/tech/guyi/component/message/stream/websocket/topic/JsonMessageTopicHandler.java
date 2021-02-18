@@ -12,7 +12,6 @@ import java.util.Optional;
 /**
  * JSON格式消息的Token处理器
  * @author guyi
- * @date 2021/1/18 15:59
  */
 public class JsonMessageTopicHandler implements TopicHandler {
 

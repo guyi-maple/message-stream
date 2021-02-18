@@ -10,21 +10,31 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 消息流钩子 <br />
- * 消息流各流程事件的回调 <br />
+ * <p>消息流钩子.</p>
+ * <p>消息流各流程事件的回调.</p>
  * @author guyi
- * @date 2021/1/18 17:40
  * @param <E> 执行参数类型
  */
 public interface MessageStreamHook<E> {
 
-    // 消息消费者注册钩子
+    /**
+     * 消息消费者注册钩子
+     */
     MessageStreamHookType<List<String>, MessageConsumerRegisterHook> REGISTER = MessageStreamHookType.valueOf(MessageConsumerRegisterHook.class);
-    // 消息消费者取消注册钩子
+
+    /**
+     * 消息消费者取消注册钩子
+     */
     MessageStreamHookType<String, MessageConsumerUnRegisterHook> UN_REGISTER = MessageStreamHookType.valueOf(MessageConsumerUnRegisterHook.class);
-    // 发布消息钩子
+
+    /**
+     * 发布消息钩子
+     */
     MessageStreamHookType<MessagePublishHookEntry, MessagePublishHook> PUBLISH = MessageStreamHookType.valueOf(MessagePublishHook.class);
-    // 消息流打开钩子
+
+    /**
+     * 消息流打开钩子
+     */
     MessageStreamHookType<Set<String>, MessageStreamOpenHook> STREAM_OPEN = MessageStreamHookType.valueOf(MessageStreamOpenHook.class);
 
     /**

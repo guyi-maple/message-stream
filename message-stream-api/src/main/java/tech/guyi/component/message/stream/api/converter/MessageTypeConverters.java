@@ -12,7 +12,6 @@ import java.util.List;
 /**
  * 消息类型转换
  * @author guyi
- * @date 2021/1/18 22:59
  */
 public class MessageTypeConverters implements InitializingBean {
 

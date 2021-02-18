@@ -2,27 +2,23 @@ package tech.guyi.component.message.stream.redis;
 
 import lombok.NonNull;
 import redis.clients.jedis.Jedis;
+import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
-import tech.guyi.component.message.stream.api.stream.entry.PublishResult;
-import tech.guyi.component.message.stream.api.worker.MessageStreamWorker;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.Future;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
  * 基于Redis实现的消息流
  * @author guyi
- * @date 2021/1/19 12:51
  */
 public class RedisMessageStream implements MessageStream {
 
     @Resource
     private RedisConfiguration configuration;
-    @Resource
-    private MessageStreamWorker worker;
 
     // Redis客户端
     private Jedis jedis;
@@ -40,12 +36,12 @@ public class RedisMessageStream implements MessageStream {
     }
 
     @Override
-    public void register(String topic) {
+    public void register(String topic, Map<Class<? extends AttachKey>, Object> attach) {
         this.pubSub.subscribe(topic);
     }
 
     @Override
-    public void unregister(String topic) {
+    public void unregister(String topic, Map<Class<? extends AttachKey>, Object> attach) {
         this.pubSub.unsubscribe(topic);
     }
 
@@ -62,11 +58,8 @@ public class RedisMessageStream implements MessageStream {
     }
 
     @Override
-    public Future<PublishResult> publish(Message message) {
-        return this.worker.submit(() -> new PublishResult(
-                Long.class,
-                this.jedis.publish(message.getTopic().getBytes(StandardCharsets.UTF_8), message.getBytes())
-        ));
+    public void publish(Message message) {
+        this.jedis.publish(message.getTopic().getBytes(StandardCharsets.UTF_8), message.getBytes());
     }
 
 }

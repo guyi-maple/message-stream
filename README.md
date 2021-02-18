@@ -18,8 +18,9 @@
 
 # 已支持消息流
 
-* [邮件](./message-stream-email)
+* [Email](./message-stream-email)
 * [Kafka](./message-stream-kafka)
 * [Rabbitmq](./message-stream-rabbitmq)
 * [Redis](./message-stream-redis)
 * [Websocket](./message-stream-websocket)
+* [Rocketmq](./message-stream-rocketmq)

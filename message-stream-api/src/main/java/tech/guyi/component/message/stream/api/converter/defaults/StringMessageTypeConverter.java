@@ -6,9 +6,8 @@ import tech.guyi.component.message.stream.api.converter.MessageTypeConverter;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 字符串消息类型转换器 <br />
+ * 字符串消息类型转换器.
  * @author guyi
- * @date 2021/1/19 00:17
  */
 public class StringMessageTypeConverter implements MessageTypeConverter<String> {
 

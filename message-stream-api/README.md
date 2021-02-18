@@ -7,12 +7,10 @@
 
 ```java
 import org.springframework.stereotype.Component;
-import tech.guyi.component.message.stream.api.annotation.StreamSubscribe;
 
 @Component
 public class Test {
 
-    @StreamSubscribe(topic = "/test/**")
     public void onMessage(String message) {
         System.out.println("收到消息: " + message);
     }
@@ -29,15 +27,11 @@ public class Test {
 
 ```java
 import org.springframework.stereotype.Component;
-import tech.guyi.component.message.stream.api.annotation.MessageContent;
-import tech.guyi.component.message.stream.api.annotation.StreamSubscribe;
-import tech.guyi.component.message.stream.api.annotation.Topic;
 
 @Component
 public class Test {
 
-    @StreamSubscribe(topic = "/test/**")
-    public void onMessage(@MessageContent String message, @Topic String topic) {
+    public void onMessage(String message, @Topic String topic) {
         System.out.printf("收到消息 [%s]: %s\n", topic, message);
     }
 
@@ -45,7 +39,7 @@ public class Test {
 ```
 
 * [@MessageContent](./src/main/java/tech/guyi/component/message/stream/api/annotation/MessageContent.java) 消息内容
-* [@Topic](./src/main/java/tech/guyi/component/message/stream/api/annotation/Topic.java) 消息的Topic
+* [@MessageTopic](./src/main/java/tech/guyi/component/message/stream/api/annotation/MessageTopic.java) 消息的Topic
 * [@StreamName](./src/main/java/tech/guyi/component/message/stream/api/annotation/StreamName.java) 消息来源的消息流名称
 * [@MessageAttach](./src/main/java/tech/guyi/component/message/stream/api/annotation/MessageAttach.java) 消息流传入的非标准附加信息
 
@@ -55,12 +49,10 @@ public class Test {
 
 ```java
 import org.springframework.stereotype.Component;
-import tech.guyi.component.message.stream.api.annotation.StreamSubscribe;
 
 @Component
 public class Test {
 
-    @StreamSubscribe(topic = "/test/**", stream = {"websocket","rabbitmq"})
     public void onMessage(String message) {
         System.out.println("收到消息: " + message);
     }

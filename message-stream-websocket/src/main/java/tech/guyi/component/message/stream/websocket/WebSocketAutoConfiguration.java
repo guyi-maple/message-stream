@@ -14,7 +14,6 @@ import tech.guyi.component.message.stream.websocket.topic.TopicHandlerFactory;
 /**
  * 自动装配
  * @author guyi
- * @date 2021/1/18 14:53
  */
 @Configuration
 @ConditionalOnProperty(value = "message.stream.websocket.enable", havingValue = "true", matchIfMissing = true)

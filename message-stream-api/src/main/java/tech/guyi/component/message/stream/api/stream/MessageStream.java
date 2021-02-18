@@ -1,23 +1,22 @@
 package tech.guyi.component.message.stream.api.stream;
 
 import lombok.NonNull;
+import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
-import tech.guyi.component.message.stream.api.stream.entry.PublishResult;
 
-import java.util.concurrent.Future;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * 消息流接口 <br />
- * 实现此接口,获取不同来源的消息
+ * <p>消息流接口.</p>
+ * <p>实现此接口,获取不同来源的消息</p>
  * @author guyi
- * @date 2021/1/15 22:58
  */
 public interface MessageStream {
 
     /**
-     * 消息流名称 <br />
-     * 用来标识不同的消息流, 不可重复或返回NULL
+     * <p>消息流名称.</p>
+     * <p>用来标识不同的消息流, 不可重复或返回NULL</p>
      * @return 消息流名称
      */
     @NonNull
@@ -29,16 +28,24 @@ public interface MessageStream {
     void close();
 
     /**
-     * 注册消息主题
+     * <p>注册消息主题</p>
+     * <p>消息流实现支持Topic匹配时, 可重写此方法</p>
      * @param topic 消息主题
+     * @param attach 消息消费者传递的额外参数
      */
-    void register(String topic);
+    default void register(String topic, Map<Class<? extends AttachKey>,Object> attach){
+
+    }
 
     /**
-     * 取消消息主题的注册
+     * <p>取消消息主题的注册</p>
+     * <p>消息流实现支持Topic匹配时, 可重写此方法</p>
      * @param topic 消息主题
+     * @param attach 消息消费者传递的额外参数
      */
-    void unregister(String topic);
+    default void unregister(String topic, Map<Class<? extends AttachKey>,Object> attach){
+
+    }
 
     /**
      * 打开消息流
@@ -49,8 +56,7 @@ public interface MessageStream {
     /**
      * 发布消息
      * @param message 消息实体
-     * @return 消息推送返回
      */
-    Future<PublishResult> publish(Message message);
+    void publish(Message message);
 
 }

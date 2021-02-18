@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 /**
  * Email消息实体
  * @author guyi
- * @date 2021/1/16 19:28
  */
 @Data
 public class EmailMessage {
@@ -22,10 +21,12 @@ public class EmailMessage {
      * 邮件主题
      */
     private String title;
+
     /**
      * 邮件内容
      */
     private String content;
+
     /**
      * 邮件发送者
      */

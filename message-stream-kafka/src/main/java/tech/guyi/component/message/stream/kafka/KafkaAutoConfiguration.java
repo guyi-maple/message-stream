@@ -11,7 +11,6 @@ import tech.guyi.component.message.stream.kafka.configuration.KafkaProducerConfi
 /**
  * 自动装配
  * @author guyi
- * @date 2021/1/19 16:06
  */
 @Configuration
 @ConditionalOnProperty(value = "message.stream.kafka.enable", havingValue = "true", matchIfMissing = true)
@@ -24,13 +23,13 @@ public class KafkaAutoConfiguration {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "message.stream.producer")
+    @ConfigurationProperties(prefix = "message.stream.kafka.producer")
     public KafkaProducerConfiguration kafkaProducerConfiguration(){
         return new KafkaProducerConfiguration();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "message.stream.consumer")
+    @ConfigurationProperties(prefix = "message.stream.kafka.consumer")
     public KafkaConsumerConfiguration kafkaConsumerConfiguration(){
         return new KafkaConsumerConfiguration();
     }

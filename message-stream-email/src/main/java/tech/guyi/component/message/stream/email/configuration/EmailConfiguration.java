@@ -4,7 +4,6 @@ import lombok.Data;
 
 /**
  * @author guyi
- * @date 2021/1/16 18:57
  */
 @Data
 public class EmailConfiguration {

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 自动装配
  * @author guyi
- * @date 2021/1/19 12:51
  */
 @Configuration
 @ConditionalOnProperty(value = "message.stream.redis.enable", havingValue = "true", matchIfMissing = true)

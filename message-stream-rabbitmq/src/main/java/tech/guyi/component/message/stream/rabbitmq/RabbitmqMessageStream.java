@@ -3,18 +3,20 @@ package tech.guyi.component.message.stream.rabbitmq;
 import com.rabbitmq.client.*;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
-import tech.guyi.component.message.stream.api.stream.entry.PublishResult;
+import tech.guyi.component.message.stream.rabbitmq.attach.ExchangeAttachKey;
+import tech.guyi.component.message.stream.rabbitmq.attach.QueueAttachKey;
 
 import javax.annotation.Resource;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
  * @author guyi
- * @date 2021/1/16 00:04
  */
 public class RabbitmqMessageStream implements MessageStream {
 
@@ -46,15 +48,32 @@ public class RabbitmqMessageStream implements MessageStream {
         this.connection.close();
     }
 
+
     /**
-     * 当有新的消息主题被注册时, 将消息主题转为RouterKey, 与队列及路由器绑定
+     * 当有新的消息Topic被注册时, 将消息Topic转为RouterKey, 与队列及路由器绑定
+     * @see MessageStream#register(String, Map)
      * @param topic 消息主题
+     * @param attach 消息消费者传递的额外参数
      */
     @Override
     @SneakyThrows
-    public void register(String topic) {
-        channel.queueBind(configuration.getQueue(), configuration.getExchange(), this.replaceTopic(topic));
-        channel.basicConsume(configuration.getQueue(), true,new DefaultConsumer(channel){
+    public void register(String topic, Map<Class<? extends AttachKey>, Object> attach) {
+        String queue = Optional.ofNullable(attach.get(QueueAttachKey.class))
+                .map(Object::toString)
+                .orElse(configuration.getQueue());
+
+        // 声明队列
+        // 当队列在服务器中不存在时则被创建
+        channel.queueDeclare(queue, false, false, false, null);
+
+        channel.queueBind(
+                queue,
+                Optional.ofNullable(attach.get(ExchangeAttachKey.class))
+                        .map(Objects::toString)
+                        .orElse(configuration.getExchange()),
+                this.replaceTopic(topic));
+
+        channel.basicConsume(queue, true,new DefaultConsumer(channel){
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
                 receiver.accept(new Message(topic, body));
@@ -63,13 +82,22 @@ public class RabbitmqMessageStream implements MessageStream {
     }
 
     /**
-     * 当有消息主题被取消注册时, 将消息主题转为RouterKey, 与队列及路由器解除绑定
+     * 当有消息Topic被取消注册时, 将消息Topic转为RouterKey, 与队列及路由器解除绑定
+     * @see MessageStream#unregister(String, Map)
      * @param topic 消息主题
+     * @param attach 消息消费者传递的额外参数
      */
     @Override
     @SneakyThrows
-    public void unregister(String topic) {
-        channel.queueUnbind(configuration.getQueue(),configuration.getExchange(), this.replaceTopic(topic));
+    public void unregister(String topic, Map<Class<? extends AttachKey>, Object> attach) {
+        channel.queueUnbind(
+                Optional.ofNullable(attach.get(QueueAttachKey.class))
+                        .map(Object::toString)
+                        .orElse(configuration.getQueue()),
+                Optional.ofNullable(attach.get(ExchangeAttachKey.class))
+                        .map(Objects::toString)
+                        .orElse(configuration.getExchange()),
+                this.replaceTopic(topic));
     }
 
     @Override
@@ -84,19 +112,18 @@ public class RabbitmqMessageStream implements MessageStream {
 
         this.connection = factory.newConnection();
         this.channel = this.connection.createChannel();
-
-        // 声明队列
-        // 当队列在服务器中不存在时则被创建
-        channel.queueDeclare(configuration.getQueue(), false, false, false, null);
     }
 
     @Override
     @SneakyThrows
-    public Future<PublishResult> publish(Message message) {
+    public void publish(Message message) {
         // topic转为routerKey
         String key = this.replaceTopic(message.getTopic());
-        this.channel.basicPublish(configuration.getExchange(),key,null,message.getBytes());
-        return CompletableFuture.completedFuture(PublishResult.success(true));
+        //获取交换机
+        String exchange = Optional.ofNullable(message.getAttach().get(ExchangeAttachKey.class))
+                .map(Objects::toString)
+                .orElse(configuration.getExchange());
+        this.channel.basicPublish(exchange,key,null,message.getBytes());
     }
 
 }

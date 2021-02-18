@@ -1,10 +1,9 @@
 package tech.guyi.component.message.stream.api.converter;
 
 /**
- * 消息转换器 <br />
- * 当消息内容需要自定义时可以实现此接口, 给定转换方式
+ * <p>消息转换器.</p>
+ * <p>当消息内容需要自定义时可以实现此接口, 给定转换方式.</p>
  * @author guyi
- * @date 2021/1/18 22:56
  */
 public interface MessageTypeConverter<M> {
 

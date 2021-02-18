@@ -6,14 +6,21 @@ import lombok.Getter;
 import java.util.function.Function;
 
 /**
+ * 配置类型
  * @author guyi
- * @date 2021/1/19 16:18
  */
 @Getter
 @AllArgsConstructor
 public enum ConfigurationType {
 
+    /**
+     * 生产者配置
+     */
     PRODUCER(KafkaConfiguration::getProducer),
+
+    /**
+     * 消费者配置
+     */
     CONSUMER(KafkaConfiguration::getConsumer);
 
     private final Function<KafkaConfiguration, ConfigurationInterface> value;

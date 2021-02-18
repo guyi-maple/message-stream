@@ -5,7 +5,6 @@ import lombok.Getter;
 /**
  * 钩子类型枚举
  * @author guyi
- * @date 2021/1/18 18:10
  */
 public class MessageStreamHookType<E,H extends MessageStreamHook<E>> {
 

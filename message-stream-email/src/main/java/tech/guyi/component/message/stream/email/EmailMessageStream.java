@@ -3,24 +3,20 @@ package tech.guyi.component.message.stream.email;
 import lombok.NonNull;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
-import tech.guyi.component.message.stream.api.stream.entry.PublishResult;
-import tech.guyi.component.message.stream.api.worker.MessageStreamWorker;
 import tech.guyi.component.message.stream.email.extract.TitleExtractor;
+import tech.guyi.component.message.stream.email.key.AddressAttachKey;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
- * 基于邮件实现的消息流 <br />
- * 收到的邮件表示消息流的输入 <br />
- * 发布消息表示发送邮件 <br />
+ * <p>基于邮件实现的消息流.</p>
+ * <p>收到的邮件表示消息流的输入.</p>
+ * <p>发布消息表示发送邮件.</p>
  * @author guyi
- * @date 2021/1/16 15:30
  */
 public class EmailMessageStream implements MessageStream {
 
@@ -29,8 +25,6 @@ public class EmailMessageStream implements MessageStream {
     private EmailService service;
     @Resource
     private TitleExtractor extractor;
-    @Resource
-    private MessageStreamWorker worker;
 
     @Override
     public @NonNull String getName() {
@@ -43,39 +37,27 @@ public class EmailMessageStream implements MessageStream {
     }
 
     @Override
-    public void register(String topic) {
-
-    }
-
-    @Override
-    public void unregister(String topic) {
-
-    }
-
-    @Override
     public void open(Consumer<Message> receiver) {
         this.service.onEmail(email -> {
             String topic = this.extractor.getTopic(email.getTitle());
             receiver.accept(new Message(
                     topic,
                     email.getContent().getBytes(StandardCharsets.UTF_8),
-                    Collections.singletonMap("address",email.getSource())
+                    Collections.singletonMap(AddressAttachKey.class,email.getSource())
             ));
         });
     }
 
     @Override
-    public Future<PublishResult> publish(Message message) {
+    public void publish(Message message) {
         // 如果附加信息中不存在收件人地址, 则丢弃该消息
-        return Optional.ofNullable(message.getAttach())
-                .map(attach -> attach.get("address"))
+        Optional.ofNullable(message.getAttach())
+                .map(attach -> attach.get(AddressAttachKey.class))
                 .map(Object::toString)
-                .map(address -> worker.submit(() -> {
+                .ifPresent(address -> {
                     String title = this.extractor.getTitle(message.getTopic());
                     this.service.send(address, title, new String(message.getBytes()));
-                    return PublishResult.success(true);
-                }))
-                .orElseGet(() -> CompletableFuture.completedFuture(PublishResult.success(false)));
+                });
     }
 
 }
