@@ -3,12 +3,16 @@ package tech.guyi.component.message.stream.email;
 import lombok.NonNull;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
+import tech.guyi.component.message.stream.api.stream.entry.PublishResult;
+import tech.guyi.component.message.stream.api.worker.MessageStreamWorker;
 import tech.guyi.component.message.stream.email.extract.TitleExtractor;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
@@ -25,6 +29,8 @@ public class EmailMessageStream implements MessageStream {
     private EmailService service;
     @Resource
     private TitleExtractor extractor;
+    @Resource
+    private MessageStreamWorker worker;
 
     @Override
     public @NonNull String getName() {
@@ -59,15 +65,17 @@ public class EmailMessageStream implements MessageStream {
     }
 
     @Override
-    public void publish(Message message) {
+    public Future<PublishResult> publish(Message message) {
         // 如果附加信息中不存在收件人地址, 则丢弃该消息
-        Optional.ofNullable(message.getAttach())
+        return Optional.ofNullable(message.getAttach())
                 .map(attach -> attach.get("address"))
                 .map(Object::toString)
-                .ifPresent(address -> {
+                .map(address -> worker.submit(() -> {
                     String title = this.extractor.getTitle(message.getTopic());
                     this.service.send(address, title, new String(message.getBytes()));
-                });
+                    return PublishResult.success(true);
+                }))
+                .orElseGet(() -> CompletableFuture.completedFuture(PublishResult.success(false)));
     }
 
 }

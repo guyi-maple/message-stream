@@ -12,6 +12,7 @@ import tech.guyi.component.message.stream.api.stream.entry.Message;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -39,12 +40,15 @@ public class MessageStreams implements InitializingBean {
                 .forEach(stream -> streams.put(stream.getName(),stream));
 
         // 打开所有流
-        this.streams.forEach((name,stream) -> stream.open(message -> this.messageConsumers.onMessage(
-                message.getTopic(),
-                name,
-                message.getAttach(),
-                message.getBytes()
-        )));
+        this.streams.forEach((name,stream) -> {
+            Consumer<Message> consumer = message -> this.messageConsumers.onMessage(
+                    message.getTopic(),
+                    name,
+                    message.getAttach(),
+                    message.getBytes()
+            );
+            stream.open(consumer);
+        });
 
         // 回调消息流打开钩子
         this.hookRunner.run(MessageStreamHook.STREAM_OPEN, this.streams.keySet());
@@ -54,8 +58,8 @@ public class MessageStreams implements InitializingBean {
      * 获取所有消息流
      * @return 消息流集合
      */
-    public Collection<MessageStream> getStreams(){
-        return this.streams.values();
+    public List<MessageStream> getStreams(){
+        return new LinkedList<>(this.streams.values());
     }
 
     /**
@@ -120,7 +124,6 @@ public class MessageStreams implements InitializingBean {
         Optional.ofNullable(names)
                 .filter(ns -> !ns.isEmpty())
                 .map(ns -> ns.stream().map(this.streams::get).collect(Collectors.toList()))
-                .map(stream -> (Collection<MessageStream>) stream)
                 .orElse(this.getStreams())
                 .forEach(MessageStream::close);
     }

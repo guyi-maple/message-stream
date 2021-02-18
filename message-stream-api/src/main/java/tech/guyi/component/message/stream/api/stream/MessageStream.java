@@ -2,9 +2,9 @@ package tech.guyi.component.message.stream.api.stream;
 
 import lombok.NonNull;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
+import tech.guyi.component.message.stream.api.stream.entry.PublishResult;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
@@ -49,7 +49,8 @@ public interface MessageStream {
     /**
      * 发布消息
      * @param message 消息实体
+     * @return 消息推送返回
      */
-    void publish(Message message);
+    Future<PublishResult> publish(Message message);
 
 }

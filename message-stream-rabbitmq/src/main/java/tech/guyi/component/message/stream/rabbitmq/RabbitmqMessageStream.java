@@ -5,8 +5,11 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
+import tech.guyi.component.message.stream.api.stream.entry.PublishResult;
 
 import javax.annotation.Resource;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
@@ -89,10 +92,11 @@ public class RabbitmqMessageStream implements MessageStream {
 
     @Override
     @SneakyThrows
-    public void publish(Message message) {
+    public Future<PublishResult> publish(Message message) {
         // topic转为routerKey
         String key = this.replaceTopic(message.getTopic());
         this.channel.basicPublish(configuration.getExchange(),key,null,message.getBytes());
+        return CompletableFuture.completedFuture(PublishResult.success(true));
     }
 
 }

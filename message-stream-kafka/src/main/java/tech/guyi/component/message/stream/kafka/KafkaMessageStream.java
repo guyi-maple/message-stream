@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.errors.WakeupException;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
+import tech.guyi.component.message.stream.api.stream.entry.PublishResult;
 import tech.guyi.component.message.stream.api.worker.MessageStreamWorker;
 import tech.guyi.component.message.stream.kafka.configuration.ConfigurationType;
 import tech.guyi.component.message.stream.kafka.configuration.KafkaConfiguration;
@@ -15,6 +17,7 @@ import tech.guyi.component.message.stream.kafka.configuration.KafkaConfiguration
 import javax.annotation.Resource;
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
@@ -118,8 +121,11 @@ public class KafkaMessageStream implements MessageStream {
     }
 
     @Override
-    public void publish(Message message) {
-        this.producer.send(new ProducerRecord<>(configuration.getProducer().getTopic(), message.getTopic(), message.getBytes()));
+    public Future<PublishResult> publish(Message message) {
+        return this.worker.submit(() -> new PublishResult(
+                RecordMetadata.class,
+                this.producer.send(new ProducerRecord<>(configuration.getProducer().getTopic(), message.getTopic(), message.getBytes()))
+        ));
     }
 
 }

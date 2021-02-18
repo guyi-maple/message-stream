@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.java_websocket.client.WebSocketClient;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
+import tech.guyi.component.message.stream.api.stream.entry.PublishResult;
 import tech.guyi.component.message.stream.websocket.connection.WebsocketConnection;
 import tech.guyi.component.message.stream.websocket.exception.ConnectionNotReadyException;
 import tech.guyi.component.message.stream.websocket.executor.WebSocketServerExecutors;
@@ -16,6 +17,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
@@ -91,11 +94,12 @@ public class WebSocketMessageStream implements MessageStream {
     }
 
     @Override
-    public void publish(Message message) {
+    public Future<PublishResult> publish(Message message) {
         if (!this.connection.isOpen()){
             throw new ConnectionNotReadyException();
         }
         this.connection.send(this.factory.get().setTopic(message.getTopic(),message.getBytes()));
+        return CompletableFuture.completedFuture(PublishResult.success(true));
     }
 
 }
