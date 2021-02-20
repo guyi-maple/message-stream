@@ -45,7 +45,6 @@ public class MessageConsumers {
     public void onMessage(String topic, String stream, Map<Class<? extends AttachKey>,Object> attach, byte[] bytes, MessageConsumerEntry entry){
         this.worker.submit(() -> {
             try{
-                // 当消费者指定的消息类型为byte数组时, 无需做类型转换
                 entry.getConsumer().accept(new ReceiveMessageEntry(bytes,topic,stream, attach));
             }catch (Exception e){
                 log.error("消息消费异常", e);

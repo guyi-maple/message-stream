@@ -34,6 +34,11 @@ public class MessageTypeConverters implements InitializingBean {
      */
     public byte[] convert(Object message){
         Class<?> type = message.getClass();
+
+        // 如果消息类型为byte[], 则不需要做类型转换
+        if (type == byte[].class){
+            return (byte[]) message;
+        }
         return this.converters.stream()
                 .filter(converter -> converter.forType().isAssignableFrom(type))
                 .findFirst()
@@ -49,6 +54,10 @@ public class MessageTypeConverters implements InitializingBean {
      * @return byte数组
      */
     public <M> M convert(byte[] bytes, Class<M> type){
+        // 如果消息类型为byte[], 则不需要做类型转换
+        if (type == byte[].class){
+            return type.cast(bytes);
+        }
         return this.converters.stream()
                 .filter(converter -> converter.forType().isAssignableFrom(type))
                 .findFirst()
