@@ -6,6 +6,7 @@ import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendResult;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import tech.guyi.component.message.stream.api.attach.AttachKey;
@@ -29,7 +30,7 @@ import java.util.function.Consumer;
  * Rocketmq消息流实现
  * @author guyi
  */
-public class RocketmqMessageStream implements MessageStream, InitializingBean {
+public class RocketmqMessageStream implements MessageStream<SendResult>, InitializingBean {
 
     // 普通消息消费者集合
     private final Map<String, DefaultMQPushConsumer> consumers = new HashMap<>();
@@ -115,7 +116,7 @@ public class RocketmqMessageStream implements MessageStream, InitializingBean {
 
     @Override
     @SneakyThrows
-    public void publish(Message message) {
+    public Optional<SendResult> publish(Message message) {
         org.apache.rocketmq.common.message.Message mess = new org.apache.rocketmq.common.message.Message();
         mess.setTopic(
                 Optional.ofNullable(message.getAttach())
@@ -125,7 +126,7 @@ public class RocketmqMessageStream implements MessageStream, InitializingBean {
         );
         mess.setTags(message.getTopic());
         mess.setBody(message.getBytes());
-        this.producer.send(mess);
+        return Optional.ofNullable(this.producer.send(mess));
     }
 
 }

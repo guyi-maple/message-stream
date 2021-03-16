@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 /**
  * @author guyi
  */
-public class RabbitmqMessageStream implements MessageStream {
+public class RabbitmqMessageStream implements MessageStream<Boolean> {
 
     // 通道
     private Channel channel;
@@ -116,7 +116,7 @@ public class RabbitmqMessageStream implements MessageStream {
 
     @Override
     @SneakyThrows
-    public void publish(Message message) {
+    public Optional<Boolean> publish(Message message) {
         // topic转为routerKey
         String key = this.replaceTopic(message.getTopic());
         //获取交换机
@@ -124,6 +124,7 @@ public class RabbitmqMessageStream implements MessageStream {
                 .map(Objects::toString)
                 .orElse(configuration.getExchange());
         this.channel.basicPublish(exchange,key,null,message.getBytes());
+        return Optional.of(true);
     }
 
 }

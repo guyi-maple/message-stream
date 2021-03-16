@@ -9,13 +9,14 @@ import tech.guyi.component.message.stream.api.stream.entry.Message;
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
  * 基于Redis实现的消息流
  * @author guyi
  */
-public class RedisMessageStream implements MessageStream {
+public class RedisMessageStream implements MessageStream<Long> {
 
     @Resource
     private RedisConfiguration configuration;
@@ -58,8 +59,8 @@ public class RedisMessageStream implements MessageStream {
     }
 
     @Override
-    public void publish(Message message) {
-        this.jedis.publish(message.getTopic().getBytes(StandardCharsets.UTF_8), message.getBytes());
+    public Optional<Long> publish(Message message) {
+        return Optional.ofNullable(this.jedis.publish(message.getTopic().getBytes(StandardCharsets.UTF_8), message.getBytes()));
     }
 
 }

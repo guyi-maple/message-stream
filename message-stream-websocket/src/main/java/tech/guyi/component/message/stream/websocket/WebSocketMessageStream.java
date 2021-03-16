@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  * @author guyi
  */
 @Slf4j
-public class WebSocketMessageStream implements MessageStream {
+public class WebSocketMessageStream implements MessageStream<Boolean> {
 
     @Resource
     private TopicHandlerFactory factory;
@@ -110,11 +110,12 @@ public class WebSocketMessageStream implements MessageStream {
     }
 
     @Override
-    public void publish(Message message) {
+    public Optional<Boolean> publish(Message message) {
         if (!this.connection.isOpen()){
             throw new ConnectionNotReadyException();
         }
         this.connection.send(this.factory.get().setTopic(message.getTopic(),message.getBytes()));
+        return Optional.of(true);
     }
 
 }

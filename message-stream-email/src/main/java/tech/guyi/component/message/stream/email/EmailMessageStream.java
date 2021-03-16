@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  * <p>发布消息表示发送邮件.</p>
  * @author guyi
  */
-public class EmailMessageStream implements MessageStream {
+public class EmailMessageStream implements MessageStream<Boolean> {
 
 
     @Resource
@@ -49,15 +49,18 @@ public class EmailMessageStream implements MessageStream {
     }
 
     @Override
-    public void publish(Message message) {
+    public Optional<Boolean> publish(Message message) {
         // 如果附加信息中不存在收件人地址, 则丢弃该消息
-        Optional.ofNullable(message.getAttach())
+        boolean success = Optional.ofNullable(message.getAttach())
                 .map(attach -> attach.get(AddressAttachKey.class))
                 .map(Object::toString)
-                .ifPresent(address -> {
+                .map(address -> {
                     String title = this.extractor.getTitle(message.getTopic());
                     this.service.send(address, title, new String(message.getBytes()));
-                });
+                    return true;
+                })
+                .orElse(false);
+        return Optional.of(success);
     }
 
 }

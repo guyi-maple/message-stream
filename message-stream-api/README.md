@@ -1,103 +1,86 @@
-
 ## 消息消费
 
-### 基于注解
-
-使用注解 ([@StreamSubscribe](./src/main/java/tech/guyi/component/message/stream/api/annotation/StreamSubscribe.java)) 修饰方法, 即可将此方法注册为消息消费者。
+使用注解 [@Subscribe](./src/main/java/tech/guyi/component/message/stream/api/annotation/listener/Subscribe.java) 修饰方法, 使其接收消息流收到的消息。
 
 ```java
 import org.springframework.stereotype.Component;
+import tech.guyi.component.message.stream.api.annotation.listener.Subscribe;
 
 @Component
 public class Test {
 
-    public void onMessage(String message) {
-        System.out.println("收到消息: " + message);
-    }
-
-}
-```
-被 <code>@StreamSubscribe</code> 修饰的方法只能有一个参数, 如果存在多个, 则需要使用注解修饰参数, 注明内容内型。
-
-使用此注解方式进行消息消费, 请确保你的类已经放入Spring容器中。
-
-#### 获取更详细的信息
-
-除消息内容外, 如果还需要获取消息Topic、消息来源等内容, 可以使用注解修饰参数
-
-```java
-import org.springframework.stereotype.Component;
-
-@Component
-public class Test {
-
-    public void onMessage(String message, @Topic String topic) {
-        System.out.printf("收到消息 [%s]: %s\n", topic, message);
+    @Subscribe
+    public void test(String message) {
+        System.out.println(message);
     }
 
 }
 ```
 
-* [@MessageContent](./src/main/java/tech/guyi/component/message/stream/api/annotation/MessageContent.java) 消息内容
-* [@MessageTopic](./src/main/java/tech/guyi/component/message/stream/api/annotation/MessageTopic.java) 消息的Topic
-* [@StreamName](./src/main/java/tech/guyi/component/message/stream/api/annotation/StreamName.java) 消息来源的消息流名称
-* [@MessageAttach](./src/main/java/tech/guyi/component/message/stream/api/annotation/MessageAttach.java) 消息流传入的非标准附加信息
+此注解默认监听所有消息流的消息, 如果需要指定消息流, 可以添加`stream`参数。
 
-#### 指定消费的消息流
+```
+@Subscribe(stream = {"kafka","redis"})
+```
 
-默认情况下会消费所有存在的消息流中的消息, 如果想要消费指定消息流的消息, 可以加入 <code>stream</code> 配置。
+#### 设置监听属性
+
+如果需要监听指定Topic的消息, 可以使用 [@Topic](./src/main/java/tech/guyi/component/message/stream/api/annotation/listener/Topic.java)
+
+> 此Topic的含义在每个消息流中可能并不相同, 具体的意义可以参考消息流实现中的说明
 
 ```java
 import org.springframework.stereotype.Component;
+import tech.guyi.component.message.stream.api.annotation.listener.Subscribe;
+import tech.guyi.component.message.stream.api.annotation.listener.Topic;
 
 @Component
 public class Test {
 
-    public void onMessage(String message) {
-        System.out.println("收到消息: " + message);
+    @Subscribe
+    @Topic("/test/message/topic")
+    public void test(String message) {
+        System.out.println(message);
     }
 
 }
 ```
 
-上述代码表示只消费来自Websocket和Rabbitmq的消息。
-
-### 实现接口
-
-可以直接实现消费者接口, 实现消息的消费 [MessageConsumer](./src/main/java/tech/guyi/component/message/stream/api/consumer/MessageConsumer.java)
-
-## 发布消息
-
-提供消息发布工具 [MessageStreamPublisher](./src/main/java/tech/guyi/component/message/stream/api/utils/MessageStreamPublisher.java) 向消息流中发布消息。
+某些消息流可能有一些自定义的参数, 比如 `GroupId` 等, 此时可以使用 [@ConsumerAttachProvider](./src/main/java/tech/guyi/component/message/stream/api/annotation/listener/ConsumerAttachProvider.java) 进行传递
 
 ```java
 import org.springframework.stereotype.Component;
-import tech.guyi.component.message.stream.api.utils.MessageStreamPublisher;
-
-import javax.annotation.Resource;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
+import tech.guyi.component.message.stream.api.annotation.listener.ConsumerAttachProvider;
+import tech.guyi.component.message.stream.api.annotation.listener.Subscribe;
+import tech.guyi.component.message.stream.api.annotation.listener.Topic;
 
 @Component
 public class Test {
 
-    @Resource
-    private MessageStreamPublisher publisher;
-
-    public void test() {
-        // 向所有消息流发布消息
-        this.publisher.publish("topic", "消息内容".getBytes(StandardCharsets.UTF_8));
-        // 向websocket发布消息
-        this.publisher.publish("topic", "消息内容".getBytes(StandardCharsets.UTF_8), null, Collections.singletonList("websocket"));
+    @Subscribe
+    @Topic("/test/message/topic")
+    @ConsumerAttachProvider(key = GroupIdAttachKey.class, value = "test")
+    public void test(String message) {
+        System.out.println(message);
     }
-
 }
 ```
 
-更多的重载方法及说明, 请参见注释。
+默认提供了两个修饰注解 
 
-### 自定义消息类型
+* [@GroupId](./src/main/java/tech/guyi/component/message/stream/api/annotation/listener/GroupId.java) GroupId
+* [@StreamTopic](./src/main/java/tech/guyi/component/message/stream/api/annotation/listener/StreamTopic.java) Kafka、Rocketmq等消息流中的Topic概念
 
-当消息的类型不为 String 或 byte[] 时, 可以实现接口 [MessageTypeConverter](src/main/java/tech/guyi/component/message/stream/api/converter/MessageTypeConverter.java) 进行类型转换。
+#### 参数绑定
 
-拥有类型转换的自定义消息类型可以直接在消费和发布中使用。
+入参默认为消息内容, 且只能有一个入参, 如果需要获取到其他属性, 可以使用 [@MessageBind](./src/main/java/tech/guyi/component/message/stream/api/annotation/receiver/MessageBind.java)
+
+```
+@MessageBind(bind = MessageBindType.TOPIC)
+```
+
+默认提供了三个快捷使用的修饰注解
+
+* [@AttachBind](./src/main/java/tech/guyi/component/message/stream/api/annotation/receiver/AttachBind.java) 绑定附加参数
+* [@ContentBind](./src/main/java/tech/guyi/component/message/stream/api/annotation/receiver/ContentBind.java) 绑定消息内容
+* [@TopicBind](./src/main/java/tech/guyi/component/message/stream/api/annotation/receiver/TopicBind.java) 绑定消息Topic

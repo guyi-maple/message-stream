@@ -23,4 +23,9 @@ public class MessagePublishHookEntry {
      */
     private final List<String> stream;
 
+    /**
+     * 消息推送返回值
+     */
+    private final Object result;
+
 }

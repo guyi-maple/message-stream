@@ -1,11 +1,10 @@
-package tech.guyi.component.message.stream.api.utils;
+package tech.guyi.component.message.stream.api.stream.publish;
 
 import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.converter.MessageTypeConverters;
 import tech.guyi.component.message.stream.api.stream.MessageStreams;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -20,18 +19,18 @@ public class MessageStreamPublisher {
     @Resource
     private MessageTypeConverters converters;
 
-//    /**
-//     * <p>向消息流发布消息.</p>
-//     * <p>如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.</p>
-//     * <p>如果消息实体中stream指定的消息流不存在, 则会丢弃该消息.</p>
-//     * @param topic 消息主题
-//     * @param bytes 消息内容
-//     * @param attach 附加信息
-//     * @param streams 要发布到的消息流, 为空表示发布到全部
-//     */
-//    public void publish(String topic, byte[] bytes, Map<Class<? extends AttachKey>,Object> attach, List<String> streams){
-//        this.streams.publish(topic,bytes,attach,streams);
-//    }
+    /**
+     * <p>向消息流发布消息.</p>
+     * <p>如果消息实体的stream不为空, 则会向stream指定的消息流发布消息.</p>
+     * <p>如果消息实体中stream指定的消息流不存在, 则会丢弃该消息.</p>
+     * @param topic 消息主题
+     * @param bytes 消息内容
+     * @param attach 附加信息
+     * @param streams 要发布到的消息流, 为空表示发布到全部
+     */
+    public void publish(String topic, byte[] bytes, Map<Class<? extends AttachKey>,Object> attach, List<String> streams){
+        this.streams.publish(topic,bytes,attach,streams);
+    }
 //
 //    /**
 //     * <p>向消息流发布消息.</p>

@@ -8,6 +8,7 @@ import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.consumer.MessageConsumers;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHook;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHookRunner;
+import tech.guyi.component.message.stream.api.hook.defaults.MessagePublishHook;
 import tech.guyi.component.message.stream.api.hook.entry.MessagePublishHookEntry;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
 
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 public class MessageStreams implements InitializingBean {
 
     // 消息流集合
-    private final Map<String, MessageStream> streams = new HashMap<>();
+    private final Map<String, MessageStream<Object>> streams = new HashMap<>();
 
     @Resource
     private MessageStreamHookRunner hookRunner;
@@ -56,7 +57,7 @@ public class MessageStreams implements InitializingBean {
      * @param pattern 正则表达式
      * @return 消息流集合
      */
-    public List<MessageStream> pattern(String pattern){
+    public List<MessageStream<Object>> pattern(String pattern){
         return this.streams.keySet().stream()
                 .filter(name -> Pattern.matches(pattern,name))
                 .map(this.streams::get)
@@ -69,7 +70,7 @@ public class MessageStreams implements InitializingBean {
      * @param names 消息流名称集合
      * @return 消息流集合
      */
-    public List<MessageStream> filter(List<String> names){
+    public List<MessageStream<Object>> filter(List<String> names){
         return Optional.ofNullable(names)
                 .filter(ns -> !names.isEmpty())
                 .map(ns -> ns.stream().map(this.streams::get).collect(Collectors.toList()))
@@ -80,7 +81,7 @@ public class MessageStreams implements InitializingBean {
      * 获取所有消息流
      * @return 消息流集合
      */
-    public List<MessageStream> all(){
+    public List<MessageStream<Object>> all(){
         return new LinkedList<>(this.streams.values());
     }
 
@@ -101,7 +102,7 @@ public class MessageStreams implements InitializingBean {
         Optional.ofNullable(names)
                 .filter(ns -> !ns.isEmpty())
                 .map(ns -> ns.stream().map(this.streams::get).collect(Collectors.toList()))
-                .map(stream -> (Collection<MessageStream>) stream)
+                .map(stream -> (Collection<MessageStream<Object>>) stream)
                 .orElse(this.all())
                 .forEach(MessageStream::close);
     }
@@ -118,6 +119,9 @@ public class MessageStreams implements InitializingBean {
     public void publish(String topic, byte[] bytes, Map<Class<? extends AttachKey>,Object> attach, List<String> streams){
         Message message = new Message(topic,bytes,Optional.ofNullable(attach).orElse(Collections.emptyMap()));
 
+        // 存储消息推送返回
+        Map<String,Object> resultMap = new HashMap<>();
+
         // 如果streams不为空获取到需要发布的消息流, 并发布消息
         // 如果streams为空获取到所有消息流, 并发布消息
         Optional.ofNullable(streams)
@@ -127,13 +131,23 @@ public class MessageStreams implements InitializingBean {
                                 .stream()
                                 .filter(stream -> names.contains(stream.getName()))
                                 .collect(Collectors.toList()))
-                .map(list -> (Collection<MessageStream>) list)
+                .map(list -> (Collection<MessageStream<Object>>) list)
                 .orElse(this.streams.values())
                 //循环发布消息到消息流
-                .forEach(stream -> stream.publish(message));
+                .forEach(stream -> stream.publish(message).ifPresent(r -> resultMap.put(stream.getName(), r)));
 
-        // 回调消息发布钩子
-        this.hookRunner.run(MessageStreamHook.PUBLISH,new MessagePublishHookEntry(message,streams));
+        resultMap.forEach((key,value) -> {
+            // 回调消息发布钩子
+            this.hookRunner.run(
+                    MessageStreamHook.PUBLISH,
+                    hook -> ((MessagePublishHook) hook).forStream().equals(key),
+                    new MessagePublishHookEntry(
+                            message,
+                            streams,
+                            value
+                    )
+            );
+        });
     }
 
 }

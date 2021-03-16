@@ -1,5 +1,6 @@
 package tech.guyi.component.message.stream.api.hook.defaults;
 
+import lombok.NonNull;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHook;
 import tech.guyi.component.message.stream.api.hook.entry.MessagePublishHookEntry;
 
@@ -9,4 +10,12 @@ import tech.guyi.component.message.stream.api.hook.entry.MessagePublishHookEntry
  * @author guyi
  */
 public interface MessagePublishHook extends MessageStreamHook<MessagePublishHookEntry> {
+
+    /**
+     * <p>注册到的消息流名称</p>
+     * <p>返回值不能为空</p>
+     * @return 消息流名称
+     */
+    @NonNull String forStream();
+
 }

@@ -10,7 +10,7 @@ import tech.guyi.component.message.stream.api.converter.defaults.StringMessageTy
 import tech.guyi.component.message.stream.api.hook.MessageStreamHookRunner;
 import tech.guyi.component.message.stream.api.stream.MessageStreams;
 import tech.guyi.component.message.stream.api.utils.AntPathMatchers;
-import tech.guyi.component.message.stream.api.utils.MessageStreamPublisher;
+import tech.guyi.component.message.stream.api.stream.publish.MessageStreamPublisher;
 import tech.guyi.component.message.stream.api.worker.MessageStreamWorker;
 import tech.guyi.component.message.stream.api.worker.defaults.DefaultMessageStreamWorker;
 

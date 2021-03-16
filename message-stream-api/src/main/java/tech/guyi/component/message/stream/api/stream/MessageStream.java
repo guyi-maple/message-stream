@@ -5,14 +5,16 @@ import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.stream.entry.Message;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
  * <p>消息流接口.</p>
  * <p>实现此接口,获取不同来源的消息</p>
  * @author guyi
+ * @param <T> 消息推送返回类型
  */
-public interface MessageStream {
+public interface MessageStream<T> {
 
     /**
      * <p>消息流名称.</p>
@@ -57,6 +59,6 @@ public interface MessageStream {
      * 发布消息
      * @param message 消息实体
      */
-    void publish(Message message);
+    Optional<T> publish(Message message);
 
 }
