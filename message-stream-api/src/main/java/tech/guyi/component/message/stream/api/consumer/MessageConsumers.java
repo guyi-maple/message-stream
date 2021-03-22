@@ -102,7 +102,7 @@ public class MessageConsumers {
                 .collect(Collectors.toList());
 
         // 根据给定的消息流名称集合获取消息流集合
-        List<MessageStream> streams = this.messageStreams.filter(streamNames);
+        List<MessageStream<Object>> streams = this.messageStreams.filter(streamNames);
         // 通知消息流取消Topic的注册
         entries.forEach(entry -> streams.forEach(stream -> stream.unregister(topic, entry.getAttach())));
 
