@@ -100,7 +100,7 @@ public class KafkaMessageStream implements MessageStream<Future<RecordMetadata>>
                 .orElse(configuration.getConsumer().getKeyDeserializer()));
         props.put("value.deserializer", Optional.ofNullable(attach.get(ValueDeserializerAttachKey.class))
                 .map(Object::toString)
-                .orElse(configuration.getConsumer().getKeyDeserializer()));
+                .orElse(configuration.getConsumer().getValueDeserializer()));
 
         KafkaConsumer<String,byte[]> consumer = new KafkaConsumer<>(props);
 
