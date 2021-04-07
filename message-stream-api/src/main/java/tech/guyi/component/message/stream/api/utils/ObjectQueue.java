@@ -8,9 +8,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author guyi
  * @date 2021/4/7 21:38
  */
-public abstract class ObjectQueue<O> {
+public abstract class ObjectQueue<O, P> {
 
-    protected abstract O create();
+    protected abstract O create(P p);
 
     private final Queue<O> queue = new ConcurrentLinkedQueue<>();
 
@@ -18,10 +18,10 @@ public abstract class ObjectQueue<O> {
      * 获取对象
      * @return 对象
      */
-    public O get(){
+    public O get(P p){
         O obj = this.queue.poll();
         if (obj == null) {
-            obj = this.create();
+            obj = this.create(p);
         }
         return obj;
     }
