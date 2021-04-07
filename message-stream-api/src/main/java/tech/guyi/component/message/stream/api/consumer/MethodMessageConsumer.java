@@ -6,6 +6,7 @@ import tech.guyi.component.message.stream.api.annotation.receiver.MessageBind;
 import tech.guyi.component.message.stream.api.consumer.entry.ReceiveMessageEntry;
 import tech.guyi.component.message.stream.api.converter.MessageTypeConverters;
 import tech.guyi.component.message.stream.api.enums.MessageBindType;
+import tech.guyi.component.message.stream.api.utils.ObjectQueue;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -36,6 +37,13 @@ public class MethodMessageConsumer implements Consumer<ReceiveMessageEntry> {
      * 消息类型转换器
      */
     private final MessageTypeConverters converters;
+
+    private final ObjectQueue<Object[]> arrayQueue = new ObjectQueue<Object[]>() {
+        @Override
+        protected Object[] create() {
+            return new Object[0];
+        }
+    };
 
     public MethodMessageConsumer(Object bean, Method method, MessageTypeConverters converters) {
         this.bean = bean;
@@ -82,8 +90,9 @@ public class MethodMessageConsumer implements Consumer<ReceiveMessageEntry> {
         Object[] params = this.messageGetters.stream()
                 .map(Optional::ofNullable)
                 .map(getter -> getter.map(get -> get.apply(entry)).orElse(null))
-                .toArray();
+                .toArray(size -> this.arrayQueue.get());
         this.method.invoke(this.bean, params);
+        this.arrayQueue.roll(params);
     }
 
 }
