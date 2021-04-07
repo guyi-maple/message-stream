@@ -38,13 +38,6 @@ public class MethodMessageConsumer implements Consumer<ReceiveMessageEntry> {
      */
     private final MessageTypeConverters converters;
 
-    private final ObjectQueue<Object[], Integer> arrayQueue = new ObjectQueue<Object[], Integer>() {
-        @Override
-        protected Object[] create(Integer size) {
-            return new Object[size];
-        }
-    };
-
     public MethodMessageConsumer(Object bean, Method method, MessageTypeConverters converters) {
         this.bean = bean;
         this.method = method;
@@ -90,9 +83,8 @@ public class MethodMessageConsumer implements Consumer<ReceiveMessageEntry> {
         Object[] params = this.messageGetters.stream()
                 .map(Optional::ofNullable)
                 .map(getter -> getter.map(get -> get.apply(entry)).orElse(null))
-                .toArray(this.arrayQueue::get);
+                .toArray();
         this.method.invoke(this.bean, params);
-        this.arrayQueue.roll(params);
     }
 
 }

@@ -1,6 +1,8 @@
 package tech.guyi.component.message.stream.api.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
 import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.consumer.entry.ReceiveMessageEntry;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHook;
@@ -20,7 +22,7 @@ import java.util.stream.Collectors;
  * @author guyi
  */
 @Slf4j
-public class MessageConsumers {
+public class MessageConsumers implements InitializingBean {
 
     @Resource
     private AntPathMatchers matchers;
@@ -33,6 +35,15 @@ public class MessageConsumers {
 
     // 消费者集合
     private final Map<String, List<MessageConsumerEntry>> consumers = new HashMap<>();
+
+    @Resource
+    private ApplicationContext context;
+    @Override
+    public void afterPropertiesSet() {
+        this.context.getBeansOfType(MessageConsumer.class)
+                .values()
+                .forEach(consumer -> this.register(consumer.topics(), consumer, consumer.attach(), consumer.streams()));
+    }
 
     /**
      * 消息到达处理
