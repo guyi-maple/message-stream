@@ -76,7 +76,11 @@ public class RabbitmqMessageStream implements MessageStream<Boolean> {
         channel.basicConsume(queue, true,new DefaultConsumer(channel){
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
-                receiver.accept(new Message(topic, body));
+                try {
+                    receiver.accept(new Message(topic, body));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -112,6 +116,7 @@ public class RabbitmqMessageStream implements MessageStream<Boolean> {
 
         this.connection = factory.newConnection();
         this.channel = this.connection.createChannel();
+        this.receiver = receiver;
     }
 
     @Override
