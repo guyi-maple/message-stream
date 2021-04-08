@@ -54,13 +54,7 @@ public class MessageConsumers implements InitializingBean {
      * @param entry 消息消费者实体
      */
     public void onMessage(String topic, String stream, Map<Class<? extends AttachKey>,Object> attach, byte[] bytes, MessageConsumerEntry entry){
-        this.worker.submit(() -> {
-            try{
-                entry.getConsumer().accept(new ReceiveMessageEntry(bytes,topic,stream, attach));
-            }catch (Exception e){
-                log.error("消息消费异常", e);
-            }
-        });
+        this.worker.submit(() -> entry.getConsumer().accept(new ReceiveMessageEntry(bytes,topic,stream, attach)));
     }
 
     /**

@@ -8,6 +8,7 @@ import tech.guyi.component.message.stream.api.annotation.listener.ConsumerAttach
 import tech.guyi.component.message.stream.api.annotation.listener.Subscribe;
 import tech.guyi.component.message.stream.api.annotation.listener.Topic;
 import tech.guyi.component.message.stream.api.attach.AttachKey;
+import tech.guyi.component.message.stream.api.consumer.method.MethodMessageConsumer;
 import tech.guyi.component.message.stream.api.converter.MessageTypeConverters;
 
 import javax.annotation.Resource;

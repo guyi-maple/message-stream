@@ -1,4 +1,4 @@
-package tech.guyi.component.message.stream.api.consumer;
+package tech.guyi.component.message.stream.api.consumer.method;
 
 import lombok.SneakyThrows;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -6,7 +6,6 @@ import tech.guyi.component.message.stream.api.annotation.receiver.MessageBind;
 import tech.guyi.component.message.stream.api.consumer.entry.ReceiveMessageEntry;
 import tech.guyi.component.message.stream.api.converter.MessageTypeConverters;
 import tech.guyi.component.message.stream.api.enums.MessageBindType;
-import tech.guyi.component.message.stream.api.utils.ObjectQueue;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -38,11 +37,13 @@ public class MethodMessageConsumer implements Consumer<ReceiveMessageEntry> {
      */
     private final MessageTypeConverters converters;
 
+    private final MethodInvoker<?> invoker;
+
     public MethodMessageConsumer(Object bean, Method method, MessageTypeConverters converters) {
         this.bean = bean;
         this.method = method;
         this.converters = converters;
-        this.init();
+        this.invoker = MethodInvokerCreator.create(this.bean, this.method);
     }
 
     // 消息获取
@@ -80,11 +81,7 @@ public class MethodMessageConsumer implements Consumer<ReceiveMessageEntry> {
     @Override
     @SneakyThrows
     public void accept(ReceiveMessageEntry entry) {
-        Object[] params = this.messageGetters.stream()
-                .map(Optional::ofNullable)
-                .map(getter -> getter.map(get -> get.apply(entry)).orElse(null))
-                .toArray();
-        this.method.invoke(this.bean, params);
+        this.invoker.invoke(entry, this.converters);
     }
 
 }

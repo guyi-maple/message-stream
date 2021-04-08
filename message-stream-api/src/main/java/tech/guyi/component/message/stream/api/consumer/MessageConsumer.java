@@ -3,6 +3,7 @@ package tech.guyi.component.message.stream.api.consumer;
 import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.consumer.entry.ReceiveMessageEntry;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -14,10 +15,16 @@ import java.util.function.Consumer;
  */
 public interface MessageConsumer extends Consumer<ReceiveMessageEntry> {
 
-    List<String> topics();
+    default List<String> topics() {
+        return Collections.singletonList("*");
+    }
 
-    Map<Class<? extends AttachKey>,Object> attach();
+    default Map<Class<? extends AttachKey>,Object> attach() {
+        return Collections.emptyMap();
+    }
 
-    List<String> streams();
+    default List<String> streams() {
+        return null;
+    }
 
 }
