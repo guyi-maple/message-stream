@@ -3,6 +3,7 @@ package tech.guyi.component.message.stream.api.consumer.method;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
+import javassist.LoaderClassPath;
 import lombok.SneakyThrows;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import tech.guyi.component.message.stream.api.annotation.receiver.MessageBind;
@@ -27,10 +28,14 @@ public class MethodInvokerCreator {
 
     private static final String packageName = "tech.guyi.component.message.stream.api.consumer.method.invoker";
 
+    private static final ClassPool pool;
+    static {
+        pool = ClassPool.getDefault();
+        pool.appendClassPath(new LoaderClassPath(Thread.currentThread().getContextClassLoader()));
+    }
+
     @SneakyThrows
     public static <T>  MethodInvoker<T> create(T bean, Method method) {
-        ClassPool pool = ClassPool.getDefault();
-
         String beanName = bean.getClass().getName();
         if (beanName.contains("$$")){
             beanName = beanName.substring(0, beanName.indexOf("$$"));
