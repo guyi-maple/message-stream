@@ -17,6 +17,7 @@
         <module>message-stream-kafka</module>
         <module>message-stream-dependencies</module>
         <module>message-stream-rocketmq</module>
+        <module>message-stream-mqtt</module>
     </modules>
 
     <name>message-stream</name>
