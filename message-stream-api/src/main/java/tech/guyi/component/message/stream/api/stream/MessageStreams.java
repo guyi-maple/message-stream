@@ -10,11 +10,10 @@ import tech.guyi.component.message.stream.api.hook.MessageStreamHook;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHookRunner;
 import tech.guyi.component.message.stream.api.hook.defaults.MessagePublishHook;
 import tech.guyi.component.message.stream.api.hook.entry.MessagePublishHookEntry;
-import tech.guyi.component.message.stream.api.stream.entry.Message;
+import tech.guyi.component.message.stream.api.hook.entry.MessagePublishHookEntryPool;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -27,6 +26,8 @@ public class MessageStreams implements InitializingBean {
     // 消息流集合
     private final Map<String, MessageStream<Object>> streams = new HashMap<>();
 
+    @Resource
+    private MessagePublishHookEntryPool pool;
     @Resource
     private MessageStreamHookRunner hookRunner;
     @Resource
@@ -41,27 +42,16 @@ public class MessageStreams implements InitializingBean {
                 .forEach(stream -> streams.put(stream.getName(),stream));
 
         // 打开所有流
-        this.streams.forEach((name,stream) -> stream.open(message -> this.messageConsumers.onMessage(
-                message.getTopic(),
-                name,
-                message.getAttach(),
-                message.getBytes()
-        )));
+        this.streams.forEach((name,stream) -> stream.open((topic, bytes, attach) ->
+                this.messageConsumers.onMessage(
+                        topic,
+                        name,
+                        attach,
+                        bytes)
+        ));
 
         // 回调消息流打开钩子
         this.hookRunner.run(MessageStreamHook.STREAM_OPEN, this.streams.keySet());
-    }
-
-    /**
-     * 根据正则表达式匹配消息流名称查找消息流.
-     * @param pattern 正则表达式
-     * @return 消息流集合
-     */
-    public List<MessageStream<Object>> pattern(String pattern){
-        return this.streams.keySet().stream()
-                .filter(name -> Pattern.matches(pattern,name))
-                .map(this.streams::get)
-                .collect(Collectors.toList());
     }
 
     /**
@@ -117,8 +107,6 @@ public class MessageStreams implements InitializingBean {
      * @param streams 要发布到的消息流, 为空表示发布到全部
      */
     public void publish(String topic, byte[] bytes, Map<Class<? extends AttachKey>,Object> attach, List<String> streams){
-        Message message = new Message(topic,bytes,Optional.ofNullable(attach).orElse(Collections.emptyMap()));
-
         // 存储消息推送返回
         Map<String,Object> resultMap = new HashMap<>();
 
@@ -134,19 +122,19 @@ public class MessageStreams implements InitializingBean {
                 .map(list -> (Collection<MessageStream<Object>>) list)
                 .orElse(this.streams.values())
                 //循环发布消息到消息流
-                .forEach(stream -> stream.publish(message).ifPresent(r -> resultMap.put(stream.getName(), r)));
+                .forEach(stream ->
+                        stream.publish(topic, bytes, attach)
+                                .ifPresent(r -> resultMap.put(stream.getName(), r)));
 
         resultMap.forEach((key,value) -> {
+            MessagePublishHookEntry entry = this.pool.pack(topic, bytes, attach, streams, value);
             // 回调消息发布钩子
             this.hookRunner.run(
                     MessageStreamHook.PUBLISH,
                     hook -> ((MessagePublishHook) hook).forStream().equals(key),
-                    new MessagePublishHookEntry(
-                            message,
-                            streams,
-                            value
-                    )
+                    entry
             );
+            this.pool.roll(entry);
         });
     }
 

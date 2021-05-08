@@ -12,8 +12,8 @@ import org.springframework.context.ApplicationContext;
 import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.attach.GroupIdAttachKey;
 import tech.guyi.component.message.stream.api.attach.StreamTopicAttachKey;
+import tech.guyi.component.message.stream.api.stream.MessageReceiver;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
-import tech.guyi.component.message.stream.api.stream.entry.Message;
 import tech.guyi.component.message.stream.rocketmq.configuration.RocketmqAliyunConfiguration;
 import tech.guyi.component.message.stream.rocketmq.configuration.RocketmqConfiguration;
 import tech.guyi.component.message.stream.rocketmq.creatoe.AliyunRocketmqCreator;
@@ -24,7 +24,6 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * Rocketmq消息流实现
@@ -39,7 +38,7 @@ public class RocketmqMessageStream implements MessageStream<SendResult>, Initial
     private RocketmqCreator creator;
 
     // 消息到达处理
-    private Consumer<Message> receiver;
+    private MessageReceiver receiver;
 
     // 消息生产者
     private DefaultMQProducer producer;
@@ -90,9 +89,7 @@ public class RocketmqMessageStream implements MessageStream<SendResult>, Initial
             consumer.subscribe(rocketTopic, "*");
 
             consumer.registerMessageListener((MessageListenerConcurrently) (messages, context) -> {
-                messages.stream()
-                        .map(ext -> new Message(ext.getTags(),ext.getBody()))
-                        .forEach(receiver);
+                messages.forEach(message -> receiver.accept(message.getTags(), message.getBody(), null));
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             });
 
@@ -105,7 +102,7 @@ public class RocketmqMessageStream implements MessageStream<SendResult>, Initial
 
     @Override
     @SneakyThrows
-    public void open(Consumer<Message> receiver) {
+    public void open(MessageReceiver receiver) {
         this.receiver = receiver;
 
         // 创建并启动生产者
@@ -116,16 +113,16 @@ public class RocketmqMessageStream implements MessageStream<SendResult>, Initial
 
     @Override
     @SneakyThrows
-    public Optional<SendResult> publish(Message message) {
+    public Optional<SendResult> publish(String topic, byte[] bytes, Map<Class<? extends AttachKey>,Object> attach) {
         org.apache.rocketmq.common.message.Message mess = new org.apache.rocketmq.common.message.Message();
         mess.setTopic(
-                Optional.ofNullable(message.getAttach())
+                Optional.ofNullable(attach)
                         .map(a -> a.get(StreamTopicAttachKey.class))
                         .map(Object::toString)
                         .orElse(configuration.getTopic())
         );
-        mess.setTags(message.getTopic());
-        mess.setBody(message.getBytes());
+        mess.setTags(topic);
+        mess.setBody(bytes);
         return Optional.ofNullable(this.producer.send(mess));
     }
 

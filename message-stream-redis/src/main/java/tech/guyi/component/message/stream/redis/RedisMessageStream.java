@@ -3,14 +3,13 @@ package tech.guyi.component.message.stream.redis;
 import lombok.NonNull;
 import redis.clients.jedis.Jedis;
 import tech.guyi.component.message.stream.api.attach.AttachKey;
+import tech.guyi.component.message.stream.api.stream.MessageReceiver;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
-import tech.guyi.component.message.stream.api.stream.entry.Message;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * 基于Redis实现的消息流
@@ -47,20 +46,20 @@ public class RedisMessageStream implements MessageStream<Long> {
     }
 
     @Override
-    public void open(Consumer<Message> receiver) {
+    public void open(MessageReceiver receiver) {
         this.jedis = new Jedis(
                 configuration.getHost(),
                 configuration.getPort(),
                 configuration.getDatabase()
         );
         this.pubSub = new MessageStreamJedisPubSub((topic, content) ->
-                receiver.accept(new Message(topic, content.getBytes(StandardCharsets.UTF_8))));
+                receiver.accept(topic, content.getBytes(StandardCharsets.UTF_8), null));
         this.jedis.subscribe(this.pubSub);
     }
 
     @Override
-    public Optional<Long> publish(Message message) {
-        return Optional.ofNullable(this.jedis.publish(message.getTopic().getBytes(StandardCharsets.UTF_8), message.getBytes()));
+    public Optional<Long> publish(String topic, byte[] bytes, Map<Class<? extends AttachKey>,Object> attach) {
+        return Optional.ofNullable(this.jedis.publish(topic.getBytes(StandardCharsets.UTF_8), bytes));
     }
 
 }

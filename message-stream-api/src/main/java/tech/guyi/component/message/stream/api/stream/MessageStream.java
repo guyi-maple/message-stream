@@ -2,11 +2,9 @@ package tech.guyi.component.message.stream.api.stream;
 
 import lombok.NonNull;
 import tech.guyi.component.message.stream.api.attach.AttachKey;
-import tech.guyi.component.message.stream.api.stream.entry.Message;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * <p>消息流接口.</p>
@@ -53,12 +51,14 @@ public interface MessageStream<T> {
      * 打开消息流
      * @param receiver 消息接收者
      */
-    void open(Consumer<Message> receiver);
+    void open(MessageReceiver receiver);
 
     /**
      * 发布消息
-     * @param message 消息实体
+     * @param topic Topic
+     * @param bytes 消息内容
+     * @param attach 消息附加信息
      */
-    Optional<T> publish(Message message);
+    Optional<T> publish(String topic, byte[] bytes, Map<Class<? extends AttachKey>,Object> attach);
 
 }

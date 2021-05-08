@@ -4,8 +4,8 @@ import com.rabbitmq.client.*;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import tech.guyi.component.message.stream.api.attach.AttachKey;
+import tech.guyi.component.message.stream.api.stream.MessageReceiver;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
-import tech.guyi.component.message.stream.api.stream.entry.Message;
 import tech.guyi.component.message.stream.rabbitmq.attach.ExchangeAttachKey;
 import tech.guyi.component.message.stream.rabbitmq.attach.QueueAttachKey;
 
@@ -13,7 +13,6 @@ import javax.annotation.Resource;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * @author guyi
@@ -25,7 +24,7 @@ public class RabbitmqMessageStream implements MessageStream<Boolean> {
     // 连接
     private Connection connection;
     // 消息接收者
-    private Consumer<Message> receiver;
+    private MessageReceiver receiver;
 
     @Resource
     private RabbitmqConfiguration configuration;
@@ -77,7 +76,7 @@ public class RabbitmqMessageStream implements MessageStream<Boolean> {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
                 try {
-                    receiver.accept(new Message(topic, body));
+                    receiver.accept(topic, body, null);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -106,7 +105,7 @@ public class RabbitmqMessageStream implements MessageStream<Boolean> {
 
     @Override
     @SneakyThrows
-    public void open(Consumer<Message> receiver) {
+    public void open(MessageReceiver receiver) {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername(configuration.getUsername());
         factory.setPassword(configuration.getPassword());
@@ -121,14 +120,15 @@ public class RabbitmqMessageStream implements MessageStream<Boolean> {
 
     @Override
     @SneakyThrows
-    public Optional<Boolean> publish(Message message) {
+    public Optional<Boolean> publish(String topic, byte[] bytes, Map<Class<? extends AttachKey>,Object> attach) {
         // topic转为routerKey
-        String key = this.replaceTopic(message.getTopic());
+        String key = this.replaceTopic(topic);
         //获取交换机
-        String exchange = Optional.ofNullable(message.getAttach().get(ExchangeAttachKey.class))
+        String exchange = Optional.ofNullable(attach)
+                .map(a -> a.get(ExchangeAttachKey.class))
                 .map(Objects::toString)
                 .orElse(configuration.getExchange());
-        this.channel.basicPublish(exchange,key,null,message.getBytes());
+        this.channel.basicPublish(exchange,key,null,bytes);
         return Optional.of(true);
     }
 

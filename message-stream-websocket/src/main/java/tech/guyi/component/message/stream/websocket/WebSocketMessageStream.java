@@ -4,8 +4,9 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.java_websocket.client.WebSocketClient;
+import tech.guyi.component.message.stream.api.attach.AttachKey;
+import tech.guyi.component.message.stream.api.stream.MessageReceiver;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
-import tech.guyi.component.message.stream.api.stream.entry.Message;
 import tech.guyi.component.message.stream.api.worker.MessageStreamWorker;
 import tech.guyi.component.message.stream.websocket.connection.WebsocketConnection;
 import tech.guyi.component.message.stream.websocket.exception.ConnectionNotReadyException;
@@ -16,10 +17,10 @@ import javax.annotation.Resource;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 /**
  * 基于Websocket实现的消息流
@@ -45,12 +46,12 @@ public class WebSocketMessageStream implements MessageStream<Boolean> {
     private WebsocketConnection connection;
 
     // 创建连接
-    private WebsocketConnection createConnection(Consumer<Message> receiver) throws URISyntaxException {
+    private WebsocketConnection createConnection(MessageReceiver receiver) throws URISyntaxException {
         return new WebsocketConnection(
                 new URI(this.executors.replace(this.configuration.getServer())),
                 origin -> {
                     byte[] bytes = origin.getBytes(StandardCharsets.UTF_8);
-                    receiver.accept(new Message(this.factory.get().getTopic(bytes), bytes));
+                    receiver.accept(this.factory.get().getTopic(bytes), bytes, null);
                 },
                 e -> {
                     // 打开断线重连
@@ -68,7 +69,7 @@ public class WebSocketMessageStream implements MessageStream<Boolean> {
     }
 
     // 重连
-    private void reconnect(Consumer<Message> receiver){
+    private void reconnect(MessageReceiver receiver){
         if (this.run){
             // 关闭重连, 防止重复建立重连任务
             this.run = false;
@@ -81,7 +82,7 @@ public class WebSocketMessageStream implements MessageStream<Boolean> {
 
     // 连接服务器
     @SneakyThrows
-    private void connect(Consumer<Message> receiver) {
+    private void connect(MessageReceiver receiver) {
         if (connection != null && connection.isOpen()){
             connection.close();
         }
@@ -105,16 +106,16 @@ public class WebSocketMessageStream implements MessageStream<Boolean> {
 
     @Override
     @SneakyThrows
-    public void open(Consumer<Message> receiver) {
+    public void open(MessageReceiver receiver) {
         this.connect(receiver);
     }
 
     @Override
-    public Optional<Boolean> publish(Message message) {
+    public Optional<Boolean> publish(String topic, byte[] bytes, Map<Class<? extends AttachKey>,Object> attach) {
         if (!this.connection.isOpen()){
             throw new ConnectionNotReadyException();
         }
-        this.connection.send(this.factory.get().setTopic(message.getTopic(),message.getBytes()));
+        this.connection.send(this.factory.get().setTopic(topic,bytes));
         return Optional.of(true);
     }
 

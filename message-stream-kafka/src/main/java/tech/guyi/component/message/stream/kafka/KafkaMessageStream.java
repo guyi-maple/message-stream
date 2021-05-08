@@ -10,8 +10,8 @@ import org.apache.kafka.common.errors.WakeupException;
 import tech.guyi.component.message.stream.api.attach.AttachKey;
 import tech.guyi.component.message.stream.api.attach.GroupIdAttachKey;
 import tech.guyi.component.message.stream.api.attach.StreamTopicAttachKey;
+import tech.guyi.component.message.stream.api.stream.MessageReceiver;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
-import tech.guyi.component.message.stream.api.stream.entry.Message;
 import tech.guyi.component.message.stream.api.worker.MessageStreamWorker;
 import tech.guyi.component.message.stream.kafka.attach.*;
 import tech.guyi.component.message.stream.kafka.configuration.ConfigurationType;
@@ -21,7 +21,6 @@ import javax.annotation.Resource;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Future;
-import java.util.function.Consumer;
 
 /**
  * @author guyi
@@ -42,7 +41,7 @@ public class KafkaMessageStream implements MessageStream<Future<RecordMetadata>>
     private boolean run;
 
     // 消息接收者
-    private Consumer<Message> receiver;
+    private MessageReceiver receiver;
 
     @Override
     public @NonNull String getName() {
@@ -122,7 +121,7 @@ public class KafkaMessageStream implements MessageStream<Future<RecordMetadata>>
             try{
                 try{
                     consumer.poll(Duration.ofMillis(configuration.getConsumer().getInterval()))
-                            .forEach(record -> this.receiver.accept(new Message(record.key(),record.value())));
+                            .forEach(record -> this.receiver.accept(record.topic(), record.value(), null));
                 }catch (WakeupException ignored){}
             }catch (Exception e) {
                 log.error("Kafka消息拉取异常", e);
@@ -142,7 +141,7 @@ public class KafkaMessageStream implements MessageStream<Future<RecordMetadata>>
     }
 
     @Override
-    public void open(Consumer<Message> receiver) {
+    public void open(MessageReceiver receiver) {
         // 打开生产者连接
         this.openProducer();
         // 缓存消息接收者
@@ -168,12 +167,13 @@ public class KafkaMessageStream implements MessageStream<Future<RecordMetadata>>
     }
 
     @Override
-    public Optional<Future<RecordMetadata>> publish(Message message) {
+    public Optional<Future<RecordMetadata>> publish(String topic, byte[] bytes, Map<Class<? extends AttachKey>,Object> attach) {
         // 如果消息中存在Topic配置则使用, 否则使用全局配置
-        String streamTopic = Optional.ofNullable(message.getAttach().get(StreamTopicAttachKey.class))
+        String streamTopic = Optional.ofNullable(attach)
+                .map(a -> a.get(StreamTopicAttachKey.class))
                 .map(Object::toString)
                 .orElse(configuration.getProducer().getTopic());
-        return Optional.of(this.producer.send(new ProducerRecord<>(streamTopic, message.getTopic(), message.getBytes())));
+        return Optional.of(this.producer.send(new ProducerRecord<>(streamTopic, topic, bytes)));
     }
 
 }

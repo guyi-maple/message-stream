@@ -6,18 +6,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import tech.guyi.component.message.stream.api.attach.AttachKey;
+import tech.guyi.component.message.stream.api.stream.MessageReceiver;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
-import tech.guyi.component.message.stream.api.stream.entry.Message;
 import tech.guyi.component.message.stream.api.worker.MessageStreamWorker;
 import tech.guyi.component.message.stream.mqtt.attach.MqttQosAttachKey;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 /**
  * MQTT消息流实现
@@ -70,7 +68,7 @@ public class MqttMessageStream implements MessageStream<Boolean> {
         return topic.replaceAll("\\*{2}", "#").replaceAll("\\*","+");
     }
 
-    private void callback(Consumer<Message> receiver) {
+    private void callback(MessageReceiver receiver) {
         this.client.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
@@ -88,7 +86,7 @@ public class MqttMessageStream implements MessageStream<Boolean> {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) {
-                receiver.accept(new Message(topic, message.getPayload(), Collections.singletonMap(MqttQosAttachKey.class, message.getQos())));
+                receiver.accept(topic, message.getPayload(), null);
             }
 
             @Override
@@ -111,7 +109,7 @@ public class MqttMessageStream implements MessageStream<Boolean> {
     }
 
     @Override
-    public void open(Consumer<Message> receiver) {
+    public void open(MessageReceiver receiver) {
         this.connect();
         this.callback(receiver);
     }
@@ -135,12 +133,12 @@ public class MqttMessageStream implements MessageStream<Boolean> {
     }
 
     @Override
-    public Optional<Boolean> publish(Message message) {
+    public Optional<Boolean> publish(String topic, byte[] bytes, Map<Class<? extends AttachKey>,Object> attach) {
         return Optional.ofNullable(this.client)
                 .filter(MqttClient::isConnected)
                 .map(client -> {
                     try {
-                        client.publish(message.getTopic(), message.getBytes(), configuration.getQos(), configuration.isRetained());
+                        client.publish(topic, bytes, configuration.getQos(), configuration.isRetained());
                         return true;
                     } catch (MqttException e) {
                         e.printStackTrace();

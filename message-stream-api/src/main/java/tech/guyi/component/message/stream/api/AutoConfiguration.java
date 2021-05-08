@@ -1,16 +1,18 @@
 package tech.guyi.component.message.stream.api;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tech.guyi.component.message.stream.api.configuration.MessageStreamConfiguration;
 import tech.guyi.component.message.stream.api.consumer.ConsumerAutoRegister;
 import tech.guyi.component.message.stream.api.consumer.MessageConsumers;
 import tech.guyi.component.message.stream.api.converter.MessageTypeConverters;
 import tech.guyi.component.message.stream.api.converter.defaults.StringMessageTypeConverter;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHookRunner;
 import tech.guyi.component.message.stream.api.stream.MessageStreams;
-import tech.guyi.component.message.stream.api.utils.AntPathMatchers;
 import tech.guyi.component.message.stream.api.stream.publish.MessageStreamPublisher;
+import tech.guyi.component.message.stream.api.utils.AntPathMatchers;
 import tech.guyi.component.message.stream.api.worker.MessageStreamWorker;
 import tech.guyi.component.message.stream.api.worker.defaults.DefaultMessageStreamWorker;
 
@@ -20,6 +22,12 @@ import tech.guyi.component.message.stream.api.worker.defaults.DefaultMessageStre
  */
 @Configuration
 public class AutoConfiguration {
+
+    @Bean
+    @ConfigurationProperties(prefix = "message.stream")
+    public MessageStreamConfiguration messageStreamConfiguration() {
+        return new MessageStreamConfiguration();
+    }
 
     @Bean
     public MessageStreams messageStreamRepository(){

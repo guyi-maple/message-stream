@@ -1,16 +1,17 @@
 package tech.guyi.component.message.stream.email;
 
 import lombok.NonNull;
+import tech.guyi.component.message.stream.api.attach.AttachKey;
+import tech.guyi.component.message.stream.api.stream.MessageReceiver;
 import tech.guyi.component.message.stream.api.stream.MessageStream;
-import tech.guyi.component.message.stream.api.stream.entry.Message;
 import tech.guyi.component.message.stream.email.extract.TitleExtractor;
 import tech.guyi.component.message.stream.email.key.AddressAttachKey;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * <p>基于邮件实现的消息流.</p>
@@ -37,26 +38,25 @@ public class EmailMessageStream implements MessageStream<Boolean> {
     }
 
     @Override
-    public void open(Consumer<Message> receiver) {
+    public void open(MessageReceiver receiver) {
         this.service.onEmail(email -> {
             String topic = this.extractor.getTopic(email.getTitle());
-            receiver.accept(new Message(
+            receiver.accept(
                     topic,
                     email.getContent().getBytes(StandardCharsets.UTF_8),
-                    Collections.singletonMap(AddressAttachKey.class,email.getSource())
-            ));
+                    Collections.singletonMap(AddressAttachKey.class,email.getSource()));
         });
     }
 
     @Override
-    public Optional<Boolean> publish(Message message) {
+    public Optional<Boolean> publish(String topic, byte[] bytes, Map<Class<? extends AttachKey>,Object> attach) {
         // 如果附加信息中不存在收件人地址, 则丢弃该消息
-        boolean success = Optional.ofNullable(message.getAttach())
-                .map(attach -> attach.get(AddressAttachKey.class))
+        boolean success = Optional.ofNullable(attach)
+                .map(a -> a.get(AddressAttachKey.class))
                 .map(Object::toString)
                 .map(address -> {
-                    String title = this.extractor.getTitle(message.getTopic());
-                    this.service.send(address, title, new String(message.getBytes()));
+                    String title = this.extractor.getTitle(topic);
+                    this.service.send(address, title, new String(bytes));
                     return true;
                 })
                 .orElse(false);
