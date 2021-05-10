@@ -10,6 +10,7 @@ import tech.guyi.component.message.stream.api.consumer.MessageConsumers;
 import tech.guyi.component.message.stream.api.converter.MessageTypeConverters;
 import tech.guyi.component.message.stream.api.converter.defaults.StringMessageTypeConverter;
 import tech.guyi.component.message.stream.api.hook.MessageStreamHookRunner;
+import tech.guyi.component.message.stream.api.hook.entry.MessagePublishHookEntryPool;
 import tech.guyi.component.message.stream.api.stream.MessageStreams;
 import tech.guyi.component.message.stream.api.stream.publish.MessageStreamPublisher;
 import tech.guyi.component.message.stream.api.utils.AntPathMatchers;
@@ -78,6 +79,11 @@ public class AutoConfiguration {
     @ConditionalOnMissingBean(MessageStreamWorker.class)
     public DefaultMessageStreamWorker defaultMessageStreamWorker(){
         return new DefaultMessageStreamWorker(20);
+    }
+
+    @Bean
+    public MessagePublishHookEntryPool messagePublishHookEntryPool(){
+        return new MessagePublishHookEntryPool();
     }
 
 }
